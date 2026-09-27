@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>زندگی - Life RPG v6 (دو نفره)</title>
+<title>زندگی - Life RPG v7 (دو نفره)</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
   body { background: #0a0a0f; font-family: Tahoma, sans-serif; overflow: hidden; color: #fff; }
@@ -199,21 +199,47 @@
   #workPanel .work-choices button:hover { background: #9b59b6; color: #000; }
 
   /* ============ MULTIPLAYER UI ============ */
-  #mpMenu { position: absolute; inset: 0; background: rgba(0,0,0,0.94); display: flex; align-items: center; justify-content: center; z-index: 450; }
-  #mpMenu .box { background: linear-gradient(180deg, #2a1f10, #1a1208); border: 3px solid #c9a961; border-radius: 15px; padding: 30px; width: 520px; max-width: 92vw; text-align: center; box-shadow: 0 0 60px rgba(201,169,97,0.4); }
+  #mpMenu { position: absolute; inset: 0; background: rgba(0,0,0,0.94); display: flex; align-items: center; justify-content: center; z-index: 450; overflow-y: auto; padding: 20px 0; }
+  #mpMenu .box { background: linear-gradient(180deg, #2a1f10, #1a1208); border: 3px solid #c9a961; border-radius: 15px; padding: 25px; width: 560px; max-width: 92vw; text-align: center; box-shadow: 0 0 60px rgba(201,169,97,0.4); margin: auto; }
   #mpMenu h2 { color: #f1c40f; margin-bottom: 20px; }
   #mpMenu button { width: 100%; padding: 14px; margin: 8px 0; border-radius: 10px; border: 2px solid #c9a961; background: transparent; color: #fff; font-family: inherit; font-size: 15px; cursor: pointer; transition: all 0.2s; }
   #mpMenu button:hover { background: #c9a961; color: #000; }
-  #mpMenu .peer-id { background: #111; padding: 12px; border-radius: 8px; margin: 15px 0; font-family: monospace; color: #2ecc71; word-break: break-all; border: 1px solid #2ecc71; font-size: 12px; }
-  #mpMenu .status { color: #aaa; font-size: 13px; margin: 15px 0; min-height: 20px; }
+  #mpMenu .peer-id { background: #111; padding: 12px; border-radius: 8px; margin: 15px 0; font-family: monospace; color: #2ecc71; word-break: break-all; border: 1px solid #2ecc71; font-size: 11px; direction: ltr; text-align: left; max-height: 80px; overflow-y: auto; }
   #mpMenu .input-row { display: flex; gap: 8px; margin: 15px 0; }
-  #mpMenu input { flex: 1; padding: 12px; border-radius: 8px; background: #111; border: 2px solid #555; color: #fff; font-family: inherit; font-size: 13px; }
+  #mpMenu input { flex: 1; padding: 12px; border-radius: 8px; background: #111; border: 2px solid #555; color: #fff; font-family: inherit; font-size: 13px; direction: ltr; text-align: left; }
+  #mpMenu input:focus { outline: none; border-color: #c9a961; }
+
+  .status-panel { background: rgba(0,0,0,0.5); border: 1px solid #444; border-radius: 10px; padding: 12px; margin: 15px 0; text-align: right; }
+  .status-line { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; animation: pulseDot 1.5s infinite; }
+  .status-dot.waiting { background: #f1c40f; box-shadow: 0 0 10px #f1c40f; }
+  .status-dot.connecting { background: #3498db; box-shadow: 0 0 10px #3498db; }
+  .status-dot.connected { background: #2ecc71; box-shadow: 0 0 10px #2ecc71; animation: none; }
+  .status-dot.error { background: #e74c3c; box-shadow: 0 0 10px #e74c3c; animation: none; }
+  .status-dot.preparing { background: #9b59b6; box-shadow: 0 0 10px #9b59b6; }
+  @keyframes pulseDot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.85); } }
+
+  .go-btn { width: 100%; padding: 16px !important; margin: 15px 0 8px 0 !important; border-radius: 12px !important; border: 3px solid #2ecc71 !important; background: linear-gradient(135deg, #2ecc71, #27ae60) !important; color: #fff !important; font-size: 16px !important; font-weight: bold !important; cursor: pointer; animation: goPulse 2s infinite; box-shadow: 0 4px 20px rgba(46,204,113,0.5); }
+  .go-btn:hover { background: linear-gradient(135deg, #27ae60, #1e8449) !important; transform: scale(1.02); }
+  @keyframes goPulse { 0%, 100% { box-shadow: 0 4px 20px rgba(46,204,113,0.5); } 50% { box-shadow: 0 4px 30px rgba(46,204,113,0.9); } }
+
+  .connect-btn { width: 100%; padding: 14px !important; margin: 10px 0 !important; border-radius: 10px !important; border: 2px solid #3498db !important; background: transparent !important; color: #3498db !important; font-size: 15px !important; font-weight: bold !important; cursor: pointer; transition: all 0.2s; }
+  .connect-btn:hover { background: #3498db !important; color: #fff !important; }
+
+  .back-btn { width: 100%; padding: 10px !important; border-radius: 8px !important; border: 2px solid #666 !important; background: transparent !important; color: #888 !important; font-size: 13px !important; cursor: pointer; }
+  .back-btn:hover { background: #666 !important; color: #fff !important; }
+
+  #mpLog { direction: ltr; text-align: left; }
+  #mpLog .log-line { padding: 2px 0; border-bottom: 1px solid #1a1a1a; }
+  #mpLog .log-line.info { color: #3498db; }
+  #mpLog .log-line.success { color: #2ecc71; }
+  #mpLog .log-line.warn { color: #f1c40f; }
+  #mpLog .log-line.error { color: #e74c3c; }
 
   #friendStatus { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(46, 204, 113, 0.95); color: #000; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: bold; z-index: 90; display: none; }
   #friendStatus.offline { background: rgba(231, 76, 60, 0.9); color: #fff; }
   #friendStatus.waiting { background: rgba(241, 196, 15, 0.9); }
 
-  /* چت کشویی */
   #chatWrapper { position: absolute; bottom: 10px; left: 200px; z-index: 80; width: 320px; }
   #chatHeader { background: rgba(0,0,0,0.85); border: 2px solid #c9a961; border-radius: 10px; padding: 8px 14px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 13px; user-select: none; transition: all 0.2s; }
   #chatHeader:hover { background: rgba(201,169,97,0.2); }
@@ -238,9 +264,6 @@
   #chatInput:focus { border-color: #c9a961; }
   #chatSendBtn { background: #c9a961; color: #000; border: none; padding: 8px 14px; border-radius: 6px; font-family: inherit; font-size: 12px; font-weight: bold; cursor: pointer; transition: all 0.2s; }
   #chatSendBtn:hover { background: #f1c40f; }
-
-  /* Friend name tag on player */
-  .friend-bubble { position: absolute; pointer-events: none; z-index: 15; }
 </style>
 </head>
 <body>
@@ -255,20 +278,56 @@
 <div id="mpMenu">
   <div class="box">
     <h2>🎮 بازی دو نفره</h2>
-    <div class="status" id="mpStatus">در حال آماده‌سازی...</div>
-    <button id="btnHost">🏠 ساخت بازی (میزبان)</button>
-    <div id="hostBox" style="display:none;">
-      <div style="color:#aaa;font-size:12px;margin-top:10px;">این لینک رو برای رفیقت بفرست:</div>
-      <div class="peer-id" id="myLinkBox">...</div>
-      <button id="btnCopy" style="padding:8px;font-size:12px;margin-top:5px;">📋 کپی لینک</button>
+
+    <div id="mpStep">
+      <div id="mpStep1">
+        <button id="btnHost">🏠 ساخت بازی (میزبان)</button>
+        <div style="color:#666;margin:12px 0;font-size:12px;">— یا —</div>
+        <button id="btnJoin">🚪 پیوستن به بازی</button>
+      </div>
+
+      <div id="mpStepHost" style="display:none;">
+        <div style="color:#f1c40f;font-size:14px;margin-bottom:12px;">📤 این لینک رو برای رفیقت بفرست:</div>
+        <div class="peer-id" id="myLinkBox">⏳ در حال ساخت لینک...</div>
+        <button id="btnCopy" disabled style="opacity:0.5;">📋 کپی لینک</button>
+
+        <div class="status-panel" id="hostStatusPanel">
+          <div class="status-line" id="hostStatusLine">
+            <span class="status-dot waiting"></span>
+            <span class="status-text">در حال آماده‌سازی سرور...</span>
+          </div>
+        </div>
+
+        <button id="btnGoToGameHost" class="go-btn" style="display:none;">🚀 رفتن به بازی</button>
+        <div style="margin-top:12px;">
+          <button class="back-btn" onclick="backToMenu()">← برگشت</button>
+        </div>
+      </div>
+
+      <div id="mpStepJoin" style="display:none;">
+        <div style="color:#f1c40f;font-size:14px;margin-bottom:12px;">🔗 لینک یا کد بازی رفیقت رو بذار:</div>
+        <div class="input-row">
+          <input id="friendIdInput" placeholder="لینک کامل یا کد (join=...)" />
+        </div>
+
+        <div class="status-panel" id="joinStatusPanel" style="display:none;">
+          <div class="status-line" id="joinStatusLine">
+            <span class="status-dot connecting"></span>
+            <span class="status-text">در حال اتصال...</span>
+          </div>
+        </div>
+
+        <button id="btnConnect" class="connect-btn">🔌 اتصال</button>
+        <button id="btnGoToGameGuest" class="go-btn" style="display:none;">🚀 رفتن به بازی</button>
+
+        <div style="margin-top:12px;">
+          <button class="back-btn" onclick="backToMenu()">← برگشت</button>
+        </div>
+      </div>
     </div>
-    <div style="color:#666;margin:15px 0;font-size:12px;">— یا —</div>
-    <button id="btnJoin">🚪 پیوستن به بازی</button>
-    <div class="input-row" id="joinBox" style="display:none;">
-      <input id="friendIdInput" placeholder="کد بازی رفیقت رو بذار..." />
-      <button id="btnConnect" style="width:auto;padding:12px 20px;margin:0;">اتصال</button>
-    </div>
-    <button id="btnSolo" style="border-color:#666;color:#aaa;">👤 بازی تک‌نفره</button>
+
+    <button id="btnSolo" style="border-color:#666;color:#aaa;margin-top:15px;">👤 بازی تک‌نفره</button>
+    <div id="mpLog" style="margin-top:15px;background:#0a0a0f;border:1px solid #333;border-radius:8px;padding:8px;max-height:120px;overflow-y:auto;font-family:monospace;font-size:10px;color:#888;"></div>
   </div>
 </div>
 
@@ -403,7 +462,7 @@
   <div id="notifications"></div>
 
   <div id="controls">
-    <kbd>WASD</kbd> حرکت | <kbd>Shift</kbd> دویدن | <kbd>E</kbd> تعامل<br>
+    <kbd>WASD</kbd> حرکت | <kbd>Shift</kbd> دویدن | <kbd>E</kbd> تعامل | <kbd>T</kbd> چت<br>
     <kbd>Q</kbd> پیاده شو | <kbd>R</kbd> طناب | <kbd>P</kbd> بستن به درخت | <kbd>O</kbd> آزاد<br>
     <kbd>I</kbd> کوله | <kbd>J</kbd> خاطرات | <kbd>F</kbd> دزدی | <kbd>M</kbd> نقشه | <kbd>C</kbd> همسر
   </div>
@@ -426,11 +485,11 @@ window.addEventListener('resize', resize);
 
 const WORLD_SIZE = 4000;
 const GAME_MINUTES_PER_SECOND = 0.35;
-const SAVE_KEY = 'life_rpg_save_v6';
+const SAVE_KEY = 'life_rpg_save_v7';
 const AUTO_SAVE_INTERVAL = 30000;
 
 // ================================================================
-// MULTIPLAYER (PeerJS)
+// MULTIPLAYER
 // ================================================================
 const MP = {
   peer: null,
@@ -438,6 +497,10 @@ const MP = {
   myId: null,
   isHost: false,
   connected: false,
+  friendReady: false,
+  myReady: false,
+  heartbeatTimer: 0,
+  HEARTBEAT_INTERVAL: 2000,
   friend: {
     x: 2000, y: 2000,
     targetX: 2000, targetY: 2000,
@@ -446,92 +509,247 @@ const MP = {
     active: false,
     bubbleMsg: '',
     bubbleTimer: 0,
-    lastSeen: 0
+    lastSeen: 0,
+    status: 'unknown'
   },
   sendTimer: 0,
-  SEND_INTERVAL: 40,  // ارسال ۲۵ بار در ثانیه
+  SEND_INTERVAL: 40,
   lastWorldSync: 0,
-  WORLD_SYNC_INTERVAL: 300,  // سینک NPC/حیوان ۳ بار در ثانیه
+  WORLD_SYNC_INTERVAL: 300,
   lastTimeSync: 0,
   TIME_SYNC_INTERVAL: 3000
 };
 
+// ============ LOGGING ============
+function mpLog(msg, level = 'info') {
+  const icons = { info: 'ℹ️', success: '✅', warn: '⚠️', error: '❌' };
+  const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+  const line = `[${time}] ${icons[level] || ''} ${msg}`;
+  console.log(`[MP] ${msg}`);
+  const logBox = document.getElementById('mpLog');
+  if (logBox) {
+    const el = document.createElement('div');
+    el.className = 'log-line ' + level;
+    el.textContent = line;
+    logBox.appendChild(el);
+    logBox.scrollTop = logBox.scrollHeight;
+    while (logBox.children.length > 40) logBox.removeChild(logBox.firstChild);
+  }
+}
+
+function setStatusPanel(panelId, lineId, dotClass, text) {
+  const panel = document.getElementById(panelId);
+  const line = document.getElementById(lineId);
+  if (!panel || !line) return;
+  panel.style.display = 'block';
+  const dot = line.querySelector('.status-dot');
+  const txt = line.querySelector('.status-text');
+  if (dot) dot.className = 'status-dot ' + dotClass;
+  if (txt) txt.textContent = text;
+}
+
+function setMyStatus(status, extra = '') {
+  const statusTexts = {
+    idle: '⏸️ آماده نیست',
+    preparing: '⏳ در حال آماده‌سازی...',
+    connecting: '🔗 در حال اتصال...',
+    connected: '🔌 وصل شد، منتظر ورود به بازی',
+    'in-game': '🎮 داخل بازی',
+    error: '❌ خطا: ' + extra
+  };
+  sendToFriend({ type: 'my-status', status, text: statusTexts[status] });
+  console.log(`[MP] وضعیت من: ${status}`);
+}
+
+function updateFriendStatusUI(friendStatus, friendText) {
+  MP.friend.status = friendStatus;
+  const panelId = MP.isHost ? 'hostStatusPanel' : 'joinStatusPanel';
+  const lineId = MP.isHost ? 'hostStatusLine' : 'joinStatusLine';
+
+  let dotClass = 'waiting';
+  let text = friendText || 'وضعیت نامشخص';
+
+  switch (friendStatus) {
+    case 'idle': dotClass = 'waiting'; text = '😴 رفیقت هنوز وارد نشده'; break;
+    case 'preparing': dotClass = 'preparing'; text = '⏳ رفیقت در حال آماده‌سازی لینک...'; break;
+    case 'connecting': dotClass = 'connecting'; text = '🔗 رفیقت در حال اتصاله...'; break;
+    case 'connected': dotClass = 'connected'; text = '✅ رفیقت وصل شد — آماده‌ی شروع'; break;
+    case 'in-game': dotClass = 'connected'; text = '🎮 رفیقت داخل بازیه!'; break;
+    case 'error': dotClass = 'error'; text = friendText || '❌ خطا در اتصال رفیق'; break;
+  }
+
+  setStatusPanel(panelId, lineId, dotClass, text);
+
+  if (MP.connected && friendStatus === 'in-game') {
+    showGoButton();
+  }
+}
+
+function showGoButton() {
+  const btn = MP.isHost ? document.getElementById('btnGoToGameHost') : document.getElementById('btnGoToGameGuest');
+  if (btn && btn.style.display === 'none') {
+    btn.style.display = 'block';
+    mpLog('🟢 رفیق داخل بازی شد! دکمه سبز فعال شد', 'success');
+    notify('🟢 رفیقت داخل بازی شد! دکمه سبز رو بزن', 'good');
+  }
+}
+
+function goToGame() {
+  if (!MP.connected) {
+    mpLog('نمی‌تونی بری تو بازی — رفیقت وصل نیست', 'warn');
+    return;
+  }
+  MP.myReady = true;
+  setMyStatus('in-game');
+  mpLog('🎮 وارد بازی شدم — این وضعیت رو به رفیقم فرستادم', 'success');
+  startGame();
+}
+
+function updateFriendStatus() {
+  const el = document.getElementById('friendStatus');
+  if (!el) return;
+  if (MP.connected && MP.myReady && MP.friendReady) {
+    el.textContent = `🎮 ${MP.friend.name} داخل بازی`;
+    el.classList.remove('offline', 'waiting');
+    el.style.display = 'block';
+  } else if (MP.connected && MP.myReady && !MP.friendReady) {
+    el.textContent = `⏳ ${MP.friend.name} هنوز وارد نشده`;
+    el.classList.add('waiting');
+    el.classList.remove('offline');
+    el.style.display = 'block';
+  } else if (MP.connected && !MP.myReady) {
+    el.textContent = `✅ ${MP.friend.name} وصل شد — دکمه سبز رو بزن`;
+    el.classList.add('waiting');
+    el.style.display = 'block';
+  } else if (MP.conn) {
+    el.textContent = '⚠️ اتصال قطع شد';
+    el.classList.add('offline');
+    el.style.display = 'block';
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+// ============ PEER ============
 function initPeer() {
-  const status = document.getElementById('mpStatus');
-  status.textContent = '🔌 در حال اتصال به سرور signaling...';
+  if (MP.peer) return;
+  setStatusPanel('hostStatusPanel', 'hostStatusLine', 'preparing', '⏳ در حال اتصال به سرور...');
+  setStatusPanel('joinStatusPanel', 'joinStatusLine', 'preparing', '⏳ در حال اتصال به سرور...');
+  mpLog('🔌 initPeer: در حال ساخت peer...', 'info');
+  setMyStatus('preparing');
+
   MP.peer = new Peer();
 
   MP.peer.on('open', (id) => {
     MP.myId = id;
-    status.textContent = '✅ آماده!';
-    document.getElementById('myLinkBox').textContent = buildJoinLink(id);
+    mpLog(`✅ Peer آماده شد. ID: ${id}`, 'success');
+    const link = buildJoinLink(id);
+    const linkBox = document.getElementById('myLinkBox');
+    if (linkBox) linkBox.textContent = link;
+    const copyBtn = document.getElementById('btnCopy');
+    if (copyBtn) { copyBtn.disabled = false; copyBtn.style.opacity = '1'; }
+    setStatusPanel('hostStatusPanel', 'hostStatusLine', 'waiting', '⏳ منتظر ورود رفیق...');
+    setMyStatus('idle');
   });
 
   MP.peer.on('error', (err) => {
-    console.error('Peer error:', err);
-    status.textContent = '⚠️ خطا: ' + err.type;
-    if (err.type === 'peer-unavailable') notify('کد رفیقت پیدا نشد!', 'bad');
-    if (err.type === 'unavailable-id') {
+    mpLog(`❌ خطای Peer: ${err.type} - ${err.message || ''}`, 'error');
+    if (err.type === 'peer-unavailable') {
+      setStatusPanel('joinStatusPanel', 'joinStatusLine', 'error', '❌ کد پیدا نشد — مطمئن شو میزبان لینک رو باز کرده');
+      notify('کد رفیقت پیدا نشد!', 'bad');
+    } else if (err.type === 'unavailable-id') {
+      mpLog('ID تکراری — تلاش مجدد...', 'warn');
       MP.peer.destroy();
-      setTimeout(initPeer, 500);
+      MP.peer = null;
+      setTimeout(initPeer, 800);
+    } else if (err.type === 'network') {
+      setStatusPanel('joinStatusPanel', 'joinStatusLine', 'error', '❌ خطای شبکه — اینترنت رو چک کن');
+    } else if (err.type === 'browser-incompatible') {
+      setStatusPanel('joinStatusPanel', 'joinStatusLine', 'error', '❌ مرورگر پشتیبانی نمی‌کنه');
+    } else {
+      setStatusPanel('joinStatusPanel', 'joinStatusLine', 'error', '❌ ' + err.type);
     }
   });
 
   MP.peer.on('connection', (conn) => {
-    if (MP.conn) { try { conn.close(); } catch(e) {} return; }
+    mpLog(`📞 connection event — از طرف: ${conn.peer}`, 'info');
+    if (MP.conn) { try { conn.close(); } catch(e){} return; }
     MP.conn = conn;
     MP.isHost = true;
     setupConnection();
   });
 
   MP.peer.on('disconnected', () => {
+    mpLog('⚠️ اتصال به signaling server قطع شد — reconnect...', 'warn');
     if (MP.peer) MP.peer.reconnect();
   });
 }
 
 function buildJoinLink(id) {
   const url = new URL(location.href);
+  url.search = '';
   url.searchParams.set('join', id);
   return url.toString();
 }
 
 function connectToFriend(friendId) {
-  document.getElementById('mpStatus').textContent = '🔗 در حال اتصال...';
   if (!MP.peer) initPeer();
-  MP.conn = MP.peer.connect(friendId, { reliable: true });
-  MP.isHost = false;
-  setupConnection();
+  const tryConnect = () => {
+    if (!MP.peer || !MP.myId) { setTimeout(tryConnect, 300); return; }
+    mpLog(`🔗 در حال اتصال به: ${friendId}`, 'info');
+    setStatusPanel('joinStatusPanel', 'joinStatusLine', 'connecting', '🔗 در حال اتصال به رفیقت...');
+    setMyStatus('connecting');
+    MP.conn = MP.peer.connect(friendId, { reliable: true });
+    MP.isHost = false;
+    setupConnection();
+  };
+  tryConnect();
 }
 
 function setupConnection() {
-  MP.conn.on('open', () => {
+  const conn = MP.conn;
+
+  conn.on('open', () => {
     MP.connected = true;
     MP.friend.active = true;
     MP.friend.lastSeen = performance.now();
-    setTimeout(() => {
-      sendToFriend({ type: 'hello', name: 'رفیق' });
-      notify('👥 رفیقت وصل شد!', 'good');
-      updateFriendStatus();
-      addChatSystem('✅ به رفیقت وصل شدی');
-    }, 300);
+    mpLog('✅ اتصال برقرار شد!', 'success');
+    setStatusPanel('hostStatusPanel', 'hostStatusLine', 'connected', '✅ رفیقت وصل شد');
+    setStatusPanel('joinStatusPanel', 'joinStatusLine', 'connected', '✅ وصل شدی به میزبان');
+    notify('👥 رفیقت وصل شد!', 'good');
+    setMyStatus('connected');
+    sendToFriend({ type: 'hello', name: 'رفیق', status: 'connected' });
+    updateFriendStatus();
   });
 
-  MP.conn.on('data', handleFriendData);
+  conn.on('data', (data) => {
+    MP.friend.lastSeen = performance.now();
+    handleFriendData(data);
+  });
 
-  MP.conn.on('close', () => {
+  conn.on('close', () => {
     MP.connected = false;
     MP.friend.active = false;
+    MP.friendReady = false;
+    mpLog('❌ اتصال بسته شد', 'error');
+    setStatusPanel('hostStatusPanel', 'hostStatusLine', 'error', '❌ اتصال رفیقت قطع شد');
+    setStatusPanel('joinStatusPanel', 'joinStatusLine', 'error', '❌ اتصال قطع شد');
     notify('👋 اتصال رفیقت قطع شد', 'bad');
+    const b1 = document.getElementById('btnGoToGameHost');
+    const b2 = document.getElementById('btnGoToGameGuest');
+    if (b1) b1.style.display = 'none';
+    if (b2) b2.style.display = 'none';
     updateFriendStatus();
-    addChatSystem('❌ اتصال قطع شد');
   });
 
-  MP.conn.on('error', (e) => console.error('Conn err:', e));
+  conn.on('error', (e) => {
+    mpLog(`❌ خطای connection: ${e.type || e}`, 'error');
+  });
 }
 
 function sendToFriend(data) {
   if (MP.conn && MP.conn.open) {
-    try { MP.conn.send(data); } catch(e) { console.error('send err', e); }
+    try { MP.conn.send(data); } catch(e) { mpLog(`خطا در ارسال: ${e.message}`, 'error'); }
   }
 }
 
@@ -542,8 +760,20 @@ function handleFriendData(data) {
   switch (data.type) {
     case 'hello':
       MP.friend.name = data.name || 'رفیق';
+      mpLog(`👋 پیام hello از رفیق`, 'info');
+      if (data.status) updateFriendStatusUI(data.status);
       updateFriendStatus();
       break;
+
+    case 'my-status':
+      mpLog(`📊 وضعیت رفیق: ${data.status} — ${data.text || ''}`, 'info');
+      updateFriendStatusUI(data.status, data.text);
+      if (data.status === 'in-game') {
+        MP.friendReady = true;
+        showGoButton();
+      }
+      break;
+
     case 'state':
       MP.friend.targetX = data.x;
       MP.friend.targetY = data.y;
@@ -551,6 +781,7 @@ function handleFriendData(data) {
       MP.friend.animFrame = data.animFrame || 0;
       MP.friend.active = true;
       break;
+
     case 'chat':
       addChatMsg(data.name || 'رفیق', data.msg, false);
       MP.friend.bubbleMsg = data.msg;
@@ -560,12 +791,11 @@ function handleFriendData(data) {
         updateChatUnread();
       }
       break;
+
     case 'time':
-      if (!MP.isHost) {
-        state.day = data.day;
-        state.time = data.time;
-      }
+      if (!MP.isHost) { state.day = data.day; state.time = data.time; }
       break;
+
     case 'world':
       if (!MP.isHost && data.npcs) {
         for (const sNpc of data.npcs) {
@@ -578,32 +808,138 @@ function handleFriendData(data) {
         }
       }
       break;
-    case 'dismount':
+
+    case 'heartbeat':
+      break;
+
+    case 'bye':
+      mpLog('👋 رفیق خداحافظی کرد', 'warn');
       break;
   }
 }
 
-function updateFriendStatus() {
-  const el = document.getElementById('friendStatus');
-  if (MP.connected) {
-    el.textContent = `👥 ${MP.friend.name} آنلاین`;
-    el.classList.remove('offline', 'waiting');
-    el.style.display = 'block';
-  } else if (MP.conn) {
-    el.textContent = '⚠️ اتصال قطع شد';
-    el.classList.add('offline');
-    el.style.display = 'block';
-  } else if (MP.peer && MP.myId) {
-    el.textContent = '⏳ منتظر رفیق...';
-    el.classList.add('waiting');
-    el.style.display = 'block';
-  } else {
-    el.style.display = 'none';
+// ============ MENU BUTTONS ============
+function backToMenu() {
+  document.getElementById('mpStep1').style.display = 'block';
+  document.getElementById('mpStepHost').style.display = 'none';
+  document.getElementById('mpStepJoin').style.display = 'none';
+}
+
+document.getElementById('btnHost').onclick = () => {
+  mpLog('🏠 حالت میزبان انتخاب شد', 'info');
+  document.getElementById('mpStep1').style.display = 'none';
+  document.getElementById('mpStepHost').style.display = 'block';
+  MP.isHost = true;
+  initPeer();
+};
+
+document.getElementById('btnJoin').onclick = () => {
+  mpLog('🚪 حالت مهمان انتخاب شد', 'info');
+  document.getElementById('mpStep1').style.display = 'none';
+  document.getElementById('mpStepJoin').style.display = 'block';
+  MP.isHost = false;
+  initPeer();
+};
+
+document.getElementById('btnConnect').onclick = () => {
+  const raw = document.getElementById('friendIdInput').value.trim();
+  if (!raw) { mpLog('کد خالیه', 'warn'); return; }
+  let id = raw;
+  try {
+    if (raw.includes('join=') || raw.startsWith('http')) {
+      const url = new URL(raw.startsWith('http') ? raw : 'http://x/?join=' + raw);
+      id = url.searchParams.get('join') || raw;
+    }
+  } catch(e) {}
+  id = id.trim();
+  if (!id) { mpLog('کد نامعتبره', 'warn'); return; }
+  mpLog(`🔍 استخراج شد: ${id}`, 'info');
+  connectToFriend(id);
+};
+
+document.getElementById('btnCopy').onclick = () => {
+  const link = document.getElementById('myLinkBox').textContent;
+  if (!link || link.includes('در حال')) return;
+  navigator.clipboard.writeText(link).then(() => {
+    notify('📋 کپی شد!', 'good');
+    mpLog('📋 لینک کپی شد', 'success');
+  }).catch(() => {
+    const range = document.createRange();
+    range.selectNode(document.getElementById('myLinkBox'));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    notify('📋 کپی شد!', 'good');
+  });
+};
+
+document.getElementById('btnGoToGameHost').onclick = goToGame;
+document.getElementById('btnGoToGameGuest').onclick = goToGame;
+
+document.getElementById('btnSolo').onclick = () => {
+  mpLog('👤 بازی تک‌نفره', 'info');
+  MP.connected = false;
+  MP.isHost = false;
+  MP.myReady = true;
+  startGame();
+};
+
+// ============ HEARTBEAT ============
+function updateHeartbeat(dt) {
+  if (!MP.connected) return;
+  MP.heartbeatTimer += dt;
+  if (MP.heartbeatTimer >= MP.HEARTBEAT_INTERVAL) {
+    MP.heartbeatTimer = 0;
+    sendToFriend({ type: 'heartbeat', t: Date.now() });
+    const sinceLast = performance.now() - MP.friend.lastSeen;
+    if (sinceLast > 8000 && MP.friend.active) {
+      mpLog('⚠️ رفیق ۸ ثانیه جواب نداد — احتمالاً قطع شده', 'warn');
+      MP.friend.active = false;
+      MP.friendReady = false;
+      const b1 = document.getElementById('btnGoToGameHost');
+      const b2 = document.getElementById('btnGoToGameGuest');
+      if (b1) b1.style.display = 'none';
+      if (b2) b2.style.display = 'none';
+      updateFriendStatus();
+    }
   }
 }
 
+// ============ SYNC ============
+function syncMultiplayer(dt) {
+  if (!MP.connected) return;
+
+  MP.sendTimer += dt;
+  if (MP.sendTimer >= MP.SEND_INTERVAL) {
+    MP.sendTimer = 0;
+    const p = state.player;
+    sendToFriend({ type: 'state', x: p.x, y: p.y, dir: p.dir, animFrame: p.animFrame });
+  }
+
+  if (MP.isHost) {
+    MP.lastWorldSync += dt;
+    if (MP.lastWorldSync > MP.WORLD_SYNC_INTERVAL) {
+      MP.lastWorldSync = 0;
+      sendToFriend({
+        type: 'world',
+        npcs: state.npcs.map(n => ({ name: n.name, x: n.x, y: n.y, relation: n.relation })),
+        animals: state.animals.map(a => ({ name: a.name, x: a.x, y: a.y, owned: a.owned, forSale: a.forSale }))
+      });
+    }
+    MP.lastTimeSync += dt;
+    if (MP.lastTimeSync > MP.TIME_SYNC_INTERVAL) {
+      MP.lastTimeSync = 0;
+      sendToFriend({ type: 'time', day: state.day, time: state.time });
+    }
+  }
+
+  MP.friend.x += (MP.friend.targetX - MP.friend.x) * 0.35;
+  MP.friend.y += (MP.friend.targetY - MP.friend.y) * 0.35;
+  if (MP.friend.bubbleTimer > 0) MP.friend.bubbleTimer -= dt;
+}
+
 // ================================================================
-// CHAT SYSTEM
+// CHAT
 // ================================================================
 let chatUnreadCount = 0;
 
@@ -656,10 +992,7 @@ function sendChatMsg() {
   const input = document.getElementById('chatInput');
   const msg = input.value.trim();
   if (!msg) return;
-  if (!MP.connected) {
-    addChatSystem('⚠️ رفیقت وصل نیست');
-    return;
-  }
+  if (!MP.connected) { addChatSystem('⚠️ رفیقت وصل نیست'); return; }
   addChatMsg('من', msg, true);
   sendToFriend({ type: 'chat', msg, name: 'رفیق' });
   input.value = '';
@@ -677,44 +1010,39 @@ document.getElementById('chatInput').addEventListener('keypress', (e) => e.stopP
 // ITEMS DB
 // ================================================================
 const ITEMS_DB = {
-  water:      { name: 'آب', icon: '💧', effect: 'thirst', value: 40, price: 8 },
-  juice:      { name: 'آبمیوه', icon: '🧃', effect: 'thirst', value: 55, price: 14 },
-  tea:        { name: 'چای', icon: '🍵', effect: 'thirst', value: 45, price: 10 },
-  coffee:     { name: 'قهوه', icon: '☕', effect: 'thirst', value: 30, price: 12 },
-  wine:       { name: 'شراب', icon: '🍷', effect: 'thirst', value: 35, price: 25 },
-  beer:       { name: 'آبجو', icon: '🍺', effect: 'thirst', value: 50, price: 15 },
-  milk:       { name: 'شیر', icon: '🥛', effect: 'thirst', value: 60, price: 12 },
-  bread:      { name: 'نان', icon: '🍞', effect: 'hunger', value: 30, price: 10 },
-  apple:      { name: 'سیب', icon: '🍎', effect: 'hunger', value: 15, price: 5 },
-  cheese:     { name: 'پنیر', icon: '🧀', effect: 'hunger', value: 25, price: 12 },
-  meat:       { name: 'گوشت', icon: '🍖', effect: 'hunger', value: 55, price: 25 },
-  fish:       { name: 'ماهی', icon: '🐟', effect: 'hunger', value: 45, price: 18 },
-  rice:       { name: 'برنج', icon: '🍚', effect: 'hunger', value: 40, price: 15 },
-  kebab:      { name: 'کباب', icon: '🍢', effect: 'hunger', value: 70, price: 35 },
-  soup:       { name: 'سوپ', icon: '🍲', effect: 'hunger', value: 50, price: 20 },
-  honey:      { name: 'عسل', icon: '🍯', effect: 'hunger', value: 35, price: 20 },
-  cake:       { name: 'کیک', icon: '🍰', effect: 'hunger', value: 40, price: 22 },
-  herb:       { name: 'گیاه دارویی', icon: '🌿', effect: 'heal', value: 25, price: 20 },
-  potion:     { name: 'معجون شفا', icon: '🧪', effect: 'heal', value: 60, price: 45 },
-  flower:     { name: 'گل سرخ', icon: '🌹', effect: 'gift', value: 0, price: 15 },
-  ring:       { name: 'انگشتر نقره', icon: '💍', effect: 'gift', value: 0, price: 100 },
-  necklace:   { name: 'گردنبند طلا', icon: '📿', effect: 'gift', value: 0, price: 200 },
-  chocolate:  { name: 'شکلات', icon: '🍫', effect: 'gift', value: 0, price: 25 },
-  perfume:    { name: 'عطر', icon: '💐', effect: 'gift', value: 0, price: 60 },
-  ring_gold:  { name: 'حلقه‌ی ازدواج', icon: '💎', effect: 'wedding', value: 0, price: 500 },
-  rope:       { name: 'طناب', icon: '🪢', effect: 'rope', value: 0, price: 30 }
+  water:{name:'آب',icon:'💧',effect:'thirst',value:40,price:8},
+  juice:{name:'آبمیوه',icon:'🧃',effect:'thirst',value:55,price:14},
+  tea:{name:'چای',icon:'🍵',effect:'thirst',value:45,price:10},
+  coffee:{name:'قهوه',icon:'☕',effect:'thirst',value:30,price:12},
+  wine:{name:'شراب',icon:'🍷',effect:'thirst',value:35,price:25},
+  beer:{name:'آبجو',icon:'🍺',effect:'thirst',value:50,price:15},
+  milk:{name:'شیر',icon:'🥛',effect:'thirst',value:60,price:12},
+  bread:{name:'نان',icon:'🍞',effect:'hunger',value:30,price:10},
+  apple:{name:'سیب',icon:'🍎',effect:'hunger',value:15,price:5},
+  cheese:{name:'پنیر',icon:'🧀',effect:'hunger',value:25,price:12},
+  meat:{name:'گوشت',icon:'🍖',effect:'hunger',value:55,price:25},
+  fish:{name:'ماهی',icon:'🐟',effect:'hunger',value:45,price:18},
+  rice:{name:'برنج',icon:'🍚',effect:'hunger',value:40,price:15},
+  kebab:{name:'کباب',icon:'🍢',effect:'hunger',value:70,price:35},
+  soup:{name:'سوپ',icon:'🍲',effect:'hunger',value:50,price:20},
+  honey:{name:'عسل',icon:'🍯',effect:'hunger',value:35,price:20},
+  cake:{name:'کیک',icon:'🍰',effect:'hunger',value:40,price:22},
+  herb:{name:'گیاه دارویی',icon:'🌿',effect:'heal',value:25,price:20},
+  potion:{name:'معجون شفا',icon:'🧪',effect:'heal',value:60,price:45},
+  flower:{name:'گل سرخ',icon:'🌹',effect:'gift',value:0,price:15},
+  ring:{name:'انگشتر نقره',icon:'💍',effect:'gift',value:0,price:100},
+  necklace:{name:'گردنبند طلا',icon:'📿',effect:'gift',value:0,price:200},
+  chocolate:{name:'شکلات',icon:'🍫',effect:'gift',value:0,price:25},
+  perfume:{name:'عطر',icon:'💐',effect:'gift',value:0,price:60},
+  ring_gold:{name:'حلقه‌ی ازدواج',icon:'💎',effect:'wedding',value:0,price:500},
+  rope:{name:'طناب',icon:'🪢',effect:'rope',value:0,price:30}
 };
 
 // ================================================================
 // STATE
 // ================================================================
 const defaultState = () => ({
-  player: {
-    x: 2000, y: 2000, speed: 2.4, dir: 'down',
-    animFrame: 0, animTimer: 0,
-    mount: null, mountedOn: null, bob: 0,
-    leadingAnimalId: null
-  },
+  player: { x: 2000, y: 2000, speed: 2.4, dir: 'down', animFrame: 0, animTimer: 0, mount: null, mountedOn: null, bob: 0, leadingAnimalId: null },
   hp: 100, energy: 100, hunger: 100, thirst: 100,
   friendship: 0, coins: 120, reputation: 0,
   day: 1, time: 6 * 60,
@@ -730,13 +1058,7 @@ const defaultState = () => ({
   showBigMap: false,
   npcOffer: null, offerCooldown: 0,
   journal: [],
-  stats: {
-    totalGiftsGiven: 0, totalGiftsReceived: 0,
-    totalStealsAttempted: 0, totalStealsSucceeded: 0, totalStealsFailed: 0,
-    totalPondVisits: 0, totalMoneyEarned: 0, totalMoneySpent: 0,
-    friendshipStarted: 0, jobsCompleted: 0, questsCompleted: 0,
-    animalsTamed: 0, animalsLed: 0
-  },
+  stats: { totalGiftsGiven: 0, totalGiftsReceived: 0, totalStealsAttempted: 0, totalStealsSucceeded: 0, totalStealsFailed: 0, totalPondVisits: 0, totalMoneyEarned: 0, totalMoneySpent: 0, friendshipStarted: 0, jobsCompleted: 0, questsCompleted: 0, animalsTamed: 0, animalsLed: 0 },
   playTimeSeconds: 0,
   createdAt: Date.now(),
   spouse: null,
@@ -772,63 +1094,29 @@ function formatTime(minutes) {
 function renderJournal(tab = 'all') {
   const content = document.getElementById('journalContent');
   let html = '';
-
   if (tab === 'friends' || tab === 'all') {
     if (tab === 'friends') html += '<h3 style="color:#f1c40f;margin-bottom:12px">💛 روابط شما</h3>';
     const friends = state.npcs.filter(n => n.relation > 0).sort((a, b) => b.relation - a.relation);
     if (friends.length === 0) html += '<div class="journal-empty">هنوز با کسی دوست نشدی...</div>';
-    else {
-      for (const n of friends) {
-        const status = getRelationshipStatus(n);
-        const isSpouse = state.spouse === n.name;
-        html += `
-          <div class="relationship-card">
-            <div class="avatar" style="background:${n.color}">👤</div>
-            <div class="info">
-              <div class="name">${n.name} ${status.badge}${isSpouse ? ' <span class="badge spouse">همسر</span>' : ''}</div>
-              <div class="status">${status.label} • ${n.memory.timesMet} بار ملاقات • ${n.memory.giftsReceived.length} هدیه</div>
-              <div class="rel-bar"><div class="rel-fill" style="width:${n.relation}%"></div></div>
-            </div>
-          </div>
-        `;
-      }
+    else for (const n of friends) {
+      const status = getRelationshipStatus(n);
+      const isSpouse = state.spouse === n.name;
+      html += `<div class="relationship-card"><div class="avatar" style="background:${n.color}">👤</div><div class="info"><div class="name">${n.name} ${status.badge}${isSpouse ? ' <span class="badge spouse">همسر</span>' : ''}</div><div class="status">${status.label} • ${n.memory.timesMet} بار ملاقات • ${n.memory.giftsReceived.length} هدیه</div><div class="rel-bar"><div class="rel-fill" style="width:${n.relation}%"></div></div></div></div>`;
     }
   }
-
   if (tab === 'stats') {
     html += '<h3 style="color:#f1c40f;margin-bottom:12px">📊 آمار بازی</h3>';
     const s = state.stats;
     const playHours = Math.floor(state.playTimeSeconds / 3600);
     const playMins = Math.floor((state.playTimeSeconds % 3600) / 60);
-    html += `
-      <div class="journal-entry">
-        <div>⏱️ زمان بازی: ${playHours} ساعت و ${playMins} دقیقه</div>
-        <div>📅 روز بازی: ${state.day}</div>
-        <div>💰 سکه‌های فعلی: ${Math.floor(state.coins)}</div>
-        <div>🏆 اعتبار: ${state.reputation}</div>
-        ${state.spouse ? `<div>💍 همسر: ${state.spouse}</div>` : ''}
-        <div>📈 کل درآمد: ${s.totalMoneyEarned} سکه</div>
-        <div>📉 کل هزینه: ${s.totalMoneySpent} سکه</div>
-        <div>🎁 هدایای داده‌شده: ${s.totalGiftsGiven}</div>
-        <div>🎁 هدایای گرفته‌شده: ${s.totalGiftsReceived}</div>
-        <div>🔓 دزدی موفق: ${s.totalStealsSucceeded}</div>
-        <div>🚨 دزدی ناموفق: ${s.totalStealsFailed}</div>
-        <div>💧 دفعات رفتن کنار حوضچه: ${s.totalPondVisits}</div>
-        <div>💛 دوستی‌های شکل‌گرفته: ${s.friendshipStarted}</div>
-        <div>🎯 مأموریت‌های کامل‌شده: ${s.questsCompleted}</div>
-        <div>💼 کارهای انجام‌شده: ${s.jobsCompleted}</div>
-        <div>🐎 حیوانات رام‌شده: ${s.animalsTamed}</div>
-      </div>
-    `;
+    html += `<div class="journal-entry"><div>⏱️ زمان بازی: ${playHours} ساعت و ${playMins} دقیقه</div><div>📅 روز بازی: ${state.day}</div><div>💰 سکه‌های فعلی: ${Math.floor(state.coins)}</div><div>🏆 اعتبار: ${state.reputation}</div>${state.spouse ? `<div>💍 همسر: ${state.spouse}</div>` : ''}<div>📈 کل درآمد: ${s.totalMoneyEarned} سکه</div><div>📉 کل هزینه: ${s.totalMoneySpent} سکه</div><div>🎁 هدایای داده‌شده: ${s.totalGiftsGiven}</div><div>🎁 هدایای گرفته‌شده: ${s.totalGiftsReceived}</div><div>🔓 دزدی موفق: ${s.totalStealsSucceeded}</div><div>🚨 دزدی ناموفق: ${s.totalStealsFailed}</div><div>💧 دفعات کنار حوضچه: ${s.totalPondVisits}</div><div>💛 دوستی‌ها: ${s.friendshipStarted}</div><div>🎯 مأموریت‌ها: ${s.questsCompleted}</div><div>💼 کارها: ${s.jobsCompleted}</div><div>🐎 حیوانات رام‌شده: ${s.animalsTamed}</div></div>`;
   }
-
   if (tab === 'quest') {
     html += '<h3 style="color:#9b59b6;margin-bottom:12px">🎯 مأموریت‌های انجام‌شده</h3>';
     const doneQuests = state.journal.filter(e => e.type === 'quest');
     if (doneQuests.length === 0) html += '<div class="journal-empty">هنوز مأموریتی کامل نکردی...</div>';
     else for (const e of doneQuests) html += `<div class="journal-entry quest"><div class="time">📅 روز ${e.day} - ${e.time}</div><div>${e.icon} ${e.text}</div></div>`;
   }
-
   if (tab === 'all' || (tab !== 'stats' && tab !== 'friends' && tab !== 'quest')) {
     let entries = state.journal;
     if (tab === 'gifts') entries = state.journal.filter(e => e.type === 'gift');
@@ -840,7 +1128,6 @@ function renderJournal(tab = 'all') {
       else for (const e of entries) html += `<div class="journal-entry ${e.type}"><div class="time">📅 روز ${e.day} - ساعت ${e.time}</div><div>${e.icon} ${e.text}</div></div>`;
     }
   }
-
   content.innerHTML = html;
 }
 
@@ -860,26 +1147,13 @@ function getRelationshipStatus(n) {
 function saveGame(silent = false) {
   try {
     const toSave = {
-      version: 6, savedAt: Date.now(),
+      version: 7, savedAt: Date.now(),
       hp: state.hp, energy: state.energy, hunger: state.hunger, thirst: state.thirst,
       friendship: state.friendship, coins: state.coins, reputation: state.reputation,
       day: state.day, time: state.time, inventory: state.inventory,
-      player: {
-        x: state.player.x, y: state.player.y, speed: state.player.speed, dir: state.player.dir,
-        mount: state.player.mount,
-        mountedOnId: state.player.mountedOn ? state.player.mountedOn.name : null,
-        leadingAnimalId: state.player.leadingAnimalId
-      },
-      npcs: state.npcs.map(n => ({
-        name: n.name, x: n.x, y: n.y, relation: n.relation,
-        memory: n.memory, homeX: n.homeX, homeY: n.homeY
-      })),
-      animals: state.animals.map(a => ({
-        name: a.name, type: a.type, owned: a.owned, forSale: a.forSale,
-        price: a.price, speed: a.speed, color: a.color,
-        x: a.x, y: a.y, homeX: a.homeX, homeY: a.homeY,
-        tiedToTree: a.tiedToTree || false
-      })),
+      player: { x: state.player.x, y: state.player.y, speed: state.player.speed, dir: state.player.dir, mount: state.player.mount, mountedOnId: state.player.mountedOn ? state.player.mountedOn.name : null, leadingAnimalId: state.player.leadingAnimalId },
+      npcs: state.npcs.map(n => ({ name: n.name, x: n.x, y: n.y, relation: n.relation, memory: n.memory, homeX: n.homeX, homeY: n.homeY })),
+      animals: state.animals.map(a => ({ name: a.name, type: a.type, owned: a.owned, forSale: a.forSale, price: a.price, speed: a.speed, color: a.color, x: a.x, y: a.y, homeX: a.homeX, homeY: a.homeY, tiedToTree: a.tiedToTree || false })),
       quests: state.quests, journal: state.journal, stats: state.stats,
       playTimeSeconds: state.playTimeSeconds, createdAt: state.createdAt,
       spouse: state.spouse, spouseState: state.spouseState,
@@ -900,7 +1174,7 @@ function loadGame() {
     const saved = localStorage.getItem(SAVE_KEY);
     if (!saved) return false;
     const data = JSON.parse(saved);
-    if (!data || (data.version !== 6 && data.version !== 5)) return false;
+    if (!data || (data.version !== 7 && data.version !== 6 && data.version !== 5)) return false;
     state.hp = data.hp ?? 100; state.energy = data.energy ?? 100;
     state.hunger = data.hunger ?? 100; state.thirst = data.thirst ?? 100;
     state.friendship = data.friendship ?? 0; state.coins = data.coins ?? 120;
@@ -973,21 +1247,15 @@ function autoSave() {
 // ================================================================
 function initWorld() {
   const treeClusters = [
-    { x: 500, y: 500, r: 400, n: 40 },
-    { x: 3200, y: 800, r: 500, n: 60 },
-    { x: 1500, y: 3200, r: 450, n: 45 },
-    { x: 2800, y: 3000, r: 350, n: 35 },
+    { x: 500, y: 500, r: 400, n: 40 }, { x: 3200, y: 800, r: 500, n: 60 },
+    { x: 1500, y: 3200, r: 450, n: 45 }, { x: 2800, y: 3000, r: 350, n: 35 },
     { x: 2000, y: 2000, r: 700, n: 30 }
   ];
   for (const c of treeClusters) {
     for (let i = 0; i < c.n; i++) {
       const a = Math.random() * Math.PI * 2;
       const d = Math.random() * c.r;
-      state.trees.push({
-        x: c.x + Math.cos(a) * d, y: c.y + Math.sin(a) * d,
-        size: 38 + Math.random() * 24,
-        type: Math.random() > 0.7 ? 'pine' : 'oak'
-      });
+      state.trees.push({ x: c.x + Math.cos(a) * d, y: c.y + Math.sin(a) * d, size: 38 + Math.random() * 24, type: Math.random() > 0.7 ? 'pine' : 'oak' });
     }
   }
   for (let i = 0; i < 60; i++) state.rocks.push({ x: Math.random() * WORLD_SIZE, y: Math.random() * WORLD_SIZE, size: 12 + Math.random() * 18 });
@@ -997,14 +1265,10 @@ function initWorld() {
     { x: 1700, y: 700, rx: 100, ry: 70, name: 'حوضچه‌ی روستا' },
     { x: 3300, y: 3300, rx: 200, ry: 150, name: 'دریاچه‌ی جنوبی' }
   ];
-  for (let i = 0; i < 350; i++) state.flowers.push({
-    x: Math.random() * WORLD_SIZE, y: Math.random() * WORLD_SIZE,
-    c: ['#e74c3c','#f1c40f','#9b59b6','#3498db','#e056fd','#ff9ff3'][Math.floor(Math.random()*6)]
-  });
+  for (let i = 0; i < 350; i++) state.flowers.push({ x: Math.random() * WORLD_SIZE, y: Math.random() * WORLD_SIZE, c: ['#e74c3c','#f1c40f','#9b59b6','#3498db','#e056fd','#ff9ff3'][Math.floor(Math.random()*6)] });
   state.lamps = [
-    { x: 1700, y: 1750 }, { x: 1900, y: 1750 }, { x: 2100, y: 1750 },
-    { x: 2300, y: 1750 }, { x: 1700, y: 2350 }, { x: 2100, y: 2350 },
-    { x: 2300, y: 2350 }, { x: 1900, y: 2500 }
+    { x: 1700, y: 1750 }, { x: 1900, y: 1750 }, { x: 2100, y: 1750 }, { x: 2300, y: 1750 },
+    { x: 1700, y: 2350 }, { x: 2100, y: 2350 }, { x: 2300, y: 2350 }, { x: 1900, y: 2500 }
   ];
   state.buildings = [
     { x: 1550, y: 1600, w: 130, h: 110, name: 'خانه‌ی حسن', type: 'house', color: '#c8a17d', roof: '#8b3a3a', interior: 'cozy' },
@@ -1019,7 +1283,6 @@ function initWorld() {
     { x: 1550, y: 1900, w: 130, h: 100, name: '📦 انبار روستا', type: 'storage', color: '#a0906a', roof: '#6d4c41', interior: 'storage' },
     { x: 2500, y: 2900, w: 130, h: 110, name: '🏡 خانه‌ی شما', type: 'house', color: '#d4c9a8', roof: '#8b3a3a', interior: 'myHome' }
   ];
-
   state.npcs = [
     makeNPC({ x: 1620, y: 1780, name: 'حسن کشاورز', color: '#3498db', hair: '#3e2723', dialog: 'farmer' }),
     makeNPC({ x: 1810, y: 1780, name: 'زهرا فروشنده', color: '#e91e63', hair: '#1a1a1a', dialog: 'merchant' }),
@@ -1032,7 +1295,6 @@ function initWorld() {
     makeNPC({ x: 1000, y: 1000, name: 'مریم عشایر', color: '#27ae60', hair: '#4a2c0f', dialog: 'nomad' }),
     makeNPC({ x: 2250, y: 2650, name: 'لیلا دختر روستا', color: '#ff69b4', hair: '#8b4513', dialog: 'villager' })
   ];
-
   state.animals = [
     { x: 700, y: 1200, name: 'تندر', type: 'horse', owned: false, forSale: false, speed: 2.8, wanderTimer: 0, homeX: 700, homeY: 1200, targetX: 700, targetY: 1200, color: '#8b4513', dir: 'right', animFrame: 0, animTimer: 0 },
     { x: 3400, y: 2800, name: 'برق', type: 'horse', owned: false, forSale: false, speed: 3.0, wanderTimer: 0, homeX: 3400, homeY: 2800, targetX: 3400, targetY: 2800, color: '#654321', dir: 'right', animFrame: 0, animTimer: 0 },
@@ -1043,7 +1305,6 @@ function initWorld() {
     { x: 2380, y: 2450, name: 'شتر باربر', type: 'camel', owned: false, forSale: true, price: 300, speed: 2.5, color: '#c9a961', wanderTimer: 0, homeX: 2380, homeY: 2450, targetX: 2380, targetY: 2450, dir: 'right', animFrame: 0, animTimer: 0 },
     { x: 2430, y: 2470, name: 'شتر تندرو', type: 'camel', owned: false, forSale: true, price: 450, speed: 3.2, color: '#8b6f47', wanderTimer: 0, homeX: 2430, homeY: 2470, targetX: 2430, targetY: 2470, dir: 'right', animFrame: 0, animTimer: 0 }
   ];
-
   state.quests = [];
   generateInitialQuests();
 }
@@ -1053,17 +1314,7 @@ function makeNPC(opts) {
     x: opts.x, y: opts.y, name: opts.name, color: opts.color, hair: opts.hair, dialog: opts.dialog,
     relation: opts.relation || 0, wanderTimer: 0,
     homeX: opts.x, homeY: opts.y, targetX: opts.x, targetY: opts.y, walking: 0,
-    memory: {
-      giftsReceived: [], lastGiftTime: 0, lastMeetTime: 0,
-      timesMet: 0, lastOfferTime: 0, invitedHome: false, remembersPlayer: false,
-      favGift: opts.dialog === 'farmer' ? 'bread'
-             : opts.dialog === 'nomad' ? 'flower'
-             : opts.dialog === 'elder' ? 'herb'
-             : opts.dialog === 'thief' ? 'ring'
-             : opts.dialog === 'villager' ? 'chocolate'
-             : opts.dialog === 'merchant' ? 'perfume'
-             : null
-    },
+    memory: { giftsReceived: [], lastGiftTime: 0, lastMeetTime: 0, timesMet: 0, lastOfferTime: 0, invitedHome: false, remembersPlayer: false, favGift: opts.dialog === 'farmer' ? 'bread' : opts.dialog === 'nomad' ? 'flower' : opts.dialog === 'elder' ? 'herb' : opts.dialog === 'thief' ? 'ring' : opts.dialog === 'villager' ? 'chocolate' : opts.dialog === 'merchant' ? 'perfume' : null },
     emotion: { icon: null, timer: 0 }
   };
 }
@@ -1083,12 +1334,10 @@ const QUEST_TEMPLATES = [
   { id: 'tame_camel', title: 'یه شتر رام کن', type: 'tame_camel', target: 1, reward: 90 },
   { id: 'spend100', title: '۱۰۰ سکه خرج کن', type: 'spend', target: 100, reward: 60 },
   { id: 'meet5', title: 'با ۵ نفر جدید آشنا شو', type: 'meet', target: 5, reward: 80 },
-  { id: 'earn500', title: '۵۰۰ سکه جمع کن', type: 'earn', target: 500, reward: 120 },
+  { id: 'earn500', title: '۵۰۰ سکه جمع کن', type: 'earn', target: 500, reward: 120 }
 ];
 
-function generateInitialQuests() {
-  addQuest('meet3'); addQuest('mount1'); addQuest('gift1'); addQuest('pond1'); addQuest('earn200');
-}
+function generateInitialQuests() { addQuest('meet3'); addQuest('mount1'); addQuest('gift1'); addQuest('pond1'); addQuest('earn200'); }
 
 function addQuest(templateId) {
   if (state.usedQuestIds.includes(templateId)) return false;
@@ -1115,9 +1364,7 @@ function updateQuestProgressByType(type, amount = 1, absoluteValue = null) {
     if (q.done || q.type !== type) continue;
     if (type === 'earn' || type === 'spend' || type === 'friend') {
       q.progress = absoluteValue !== null ? absoluteValue : q.progress;
-    } else {
-      q.progress += amount;
-    }
+    } else q.progress += amount;
     if (q.progress >= q.target) {
       q.done = true;
       state.coins += q.reward;
@@ -1127,10 +1374,7 @@ function updateQuestProgressByType(type, amount = 1, absoluteValue = null) {
       notify(`🏆 مأموریت «${q.title}» کامل شد! (+${q.reward} سکه، +۱۰ اعتبار)`, 'good');
       addJournalEntry('quest', `مأموریت «${q.title}» رو کامل کردم و ${q.reward} سکه و ۱۰ اعتبار گرفتم.`, '🏆');
       updated = true;
-      setTimeout(() => {
-        const success = tryGenerateNewQuest();
-        if (success) notify('✨ مأموریت جدید اضافه شد!', 'quest');
-      }, 2000);
+      setTimeout(() => { if (tryGenerateNewQuest()) notify('✨ مأموریت جدید اضافه شد!', 'quest'); }, 2000);
     }
   }
   if (updated) { renderQuests(); saveGame(true); }
@@ -1143,19 +1387,17 @@ function renderQuests() {
   const recentDone = state.quests.filter(q => q.done).slice(-2);
   const all = [...active, ...recentDone];
   if (all.length === 0) list.innerHTML = '<div style="color:#666;font-size:11px">همه مأموریت‌ها انجام شده</div>';
-  else {
-    all.forEach(q => {
-      const el = document.createElement('div');
-      el.className = 'quest-item' + (q.done ? ' done' : '') + (q.isNew ? ' new' : '');
-      el.textContent = (q.done ? '✅ ' : '⏳ ') + q.title + ` (${q.progress}/${q.target})`;
-      list.appendChild(el);
-    });
-  }
+  else all.forEach(q => {
+    const el = document.createElement('div');
+    el.className = 'quest-item' + (q.done ? ' done' : '') + (q.isNew ? ' new' : '');
+    el.textContent = (q.done ? '✅ ' : '⏳ ') + q.title + ` (${q.progress}/${q.target})`;
+    list.appendChild(el);
+  });
   document.getElementById('quests').style.display = 'block';
 }
 
 // ================================================================
-// WORK SYSTEM
+// WORK
 // ================================================================
 const JOBS = {
   farmer: { title: '🧑‍🌾 کمک به کشاورز', desc: 'کشاورز ازت خواسته تا گندم‌ها رو درو کنی و کاه‌ها رو جمع کنی.', reward: 25, time: 5, rep: 5 },
@@ -1186,10 +1428,7 @@ function openWorkPanel(npc) {
   document.getElementById('workPanel').style.display = 'block';
 }
 
-function closeWorkPanel() {
-  state.workPanelOpen = false;
-  document.getElementById('workPanel').style.display = 'none';
-}
+function closeWorkPanel() { state.workPanelOpen = false; document.getElementById('workPanel').style.display = 'none'; }
 
 function startJob(npc, job) {
   closeWorkPanel();
@@ -1222,7 +1461,7 @@ function completeJob() {
 }
 
 // ================================================================
-// MARRIAGE SYSTEM
+// MARRIAGE
 // ================================================================
 function canMarry(npc) {
   if (state.spouse) return { ok: false, reason: 'تو قبلاً ازدواج کردی!' };
@@ -1242,12 +1481,10 @@ function proposeMarriage(npc) {
   const choices = document.getElementById('weddingChoices');
   choices.innerHTML = '';
   const yesBtn = document.createElement('button');
-  yesBtn.className = 'yes-btn';
-  yesBtn.textContent = `💍 بله! ازدواج می‌کنم`;
+  yesBtn.className = 'yes-btn'; yesBtn.textContent = `💍 بله! ازدواج می‌کنم`;
   yesBtn.onclick = () => finalizeMarriage(npc);
   const noBtn = document.createElement('button');
-  noBtn.className = 'no-btn';
-  noBtn.textContent = '❌ هنوز آماده نیستم';
+  noBtn.className = 'no-btn'; noBtn.textContent = '❌ هنوز آماده نیستم';
   noBtn.onclick = () => { state.weddingOpen = false; document.getElementById('weddingPanel').style.display = 'none'; };
   choices.appendChild(yesBtn); choices.appendChild(noBtn);
   document.getElementById('weddingPanel').style.display = 'block';
@@ -1272,13 +1509,7 @@ function finalizeMarriage(npc) {
   for (let i = 0; i < 100; i++) {
     const a = Math.random() * Math.PI * 2;
     const sp = 2 + Math.random() * 5;
-    state.particles.push({
-      x: npc.x, y: npc.y - 20,
-      vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 2,
-      size: 3 + Math.random() * 4,
-      color: ['#ff69b4', '#ff1744', '#f1c40f', '#fff'][Math.floor(Math.random()*4)],
-      life: 80, maxLife: 80
-    });
+    state.particles.push({ x: npc.x, y: npc.y - 20, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 2, size: 3 + Math.random() * 4, color: ['#ff69b4', '#ff1744', '#f1c40f', '#fff'][Math.floor(Math.random()*4)], life: 80, maxLife: 80 });
   }
   npc.emotion.icon = '💍';
   npc.emotion.timer = 8000;
@@ -1288,10 +1519,8 @@ function finalizeMarriage(npc) {
 
 function updateSpouseStatus() {
   const el = document.getElementById('spouseStatus');
-  if (state.spouse) {
-    el.textContent = `💍 همسر: ${state.spouse} (${getSpouseStateLabel()})`;
-    el.style.display = 'block';
-  } else el.style.display = 'none';
+  if (state.spouse) { el.textContent = `💍 همسر: ${state.spouse} (${getSpouseStateLabel()})`; el.style.display = 'block'; }
+  else el.style.display = 'none';
 }
 
 function getSpouseStateLabel() {
@@ -1306,14 +1535,10 @@ function openSpouseCommand() {
   const grid = document.getElementById('cmdGrid');
   grid.innerHTML = '';
   const commands = [
-    { label: '🚶 دنبالم بیا', cmd: 'follow' },
-    { label: '🏠 برو خونه', cmd: 'go_home' },
-    { label: '🛒 برو خرید', cmd: 'shop' },
-    { label: '🛏️ برو استراحت', cmd: 'rest' },
-    { label: '🤗 منو بغل کن', cmd: 'hug' },
-    { label: '💋 بوسم کن', cmd: 'kiss' },
-    { label: '🍽️ با هم غذا بخوریم', cmd: 'dine' },
-    { label: '💐 برام گل بیار', cmd: 'bring_flower' },
+    { label: '🚶 دنبالم بیا', cmd: 'follow' }, { label: '🏠 برو خونه', cmd: 'go_home' },
+    { label: '🛒 برو خرید', cmd: 'shop' }, { label: '🛏️ برو استراحت', cmd: 'rest' },
+    { label: '🤗 منو بغل کن', cmd: 'hug' }, { label: '💋 بوسم کن', cmd: 'kiss' },
+    { label: '🍽️ با هم غذا بخوریم', cmd: 'dine' }, { label: '💐 برام گل بیار', cmd: 'bring_flower' },
     { label: '🏃 بیا اینجا', cmd: 'come_here' }
   ];
   for (const c of commands) {
@@ -1325,27 +1550,16 @@ function openSpouseCommand() {
   document.getElementById('spouseCommand').style.display = 'block';
 }
 
-function closeSpouseCommand() {
-  state.spouseCommandOpen = false;
-  document.getElementById('spouseCommand').style.display = 'none';
-}
+function closeSpouseCommand() { state.spouseCommandOpen = false; document.getElementById('spouseCommand').style.display = 'none'; }
 
 function executeSpouseCommand(cmd) {
   const spouse = state.npcs.find(n => n.name === state.spouse);
   if (!spouse) { closeSpouseCommand(); return; }
   switch(cmd) {
-    case 'follow':
-      state.spouseState = 'following';
-      notify(`💕 ${spouse.name} دنبالت میاد`, 'love');
-      addJournalEntry('love', `${spouse.name} رو صدا زدم دنبالم بیاد.`, '🚶');
-      break;
-    case 'go_home':
-      state.spouseState = 'going_home';
-      notify(`🏠 ${spouse.name} رفت خونه`, 'info');
-      break;
+    case 'follow': state.spouseState = 'following'; notify(`💕 ${spouse.name} دنبالت میاد`, 'love'); addJournalEntry('love', `${spouse.name} رو صدا زدم دنبالم بیاد.`, '🚶'); break;
+    case 'go_home': state.spouseState = 'going_home'; notify(`🏠 ${spouse.name} رفت خونه`, 'info'); break;
     case 'shop':
-      state.spouseState = 'shopping';
-      notify(`🛒 ${spouse.name} رفت خرید`, 'info');
+      state.spouseState = 'shopping'; notify(`🛒 ${spouse.name} رفت خرید`, 'info');
       setTimeout(() => {
         if (state.spouseState === 'shopping') {
           const gifts = ['apple', 'bread', 'chocolate', 'flower'];
@@ -1359,38 +1573,31 @@ function executeSpouseCommand(cmd) {
         }
       }, 8000);
       break;
-    case 'rest':
-      state.spouseState = 'resting';
-      notify(`😴 ${spouse.name} رفت استراحت`, 'info');
-      break;
+    case 'rest': state.spouseState = 'resting'; notify(`😴 ${spouse.name} رفت استراحت`, 'info'); break;
     case 'hug':
       state.spouseState = 'hugging';
-      state.hp = Math.min(100, state.hp + 15);
-      state.energy = Math.min(100, state.energy + 20);
+      state.hp = Math.min(100, state.hp + 15); state.energy = Math.min(100, state.energy + 20);
       addFriend(spouse, 3);
-      notify(`🤗 ${spouse.name} رو بغل کردی! گرمای وجودش آرومت کرد`, 'love');
-      addJournalEntry('love', `${spouse.name} رو بغل کردم. لحظه‌ی قشنگی بود.`, '🤗');
+      notify(`🤗 ${spouse.name} رو بغل کردی!`, 'love');
+      addJournalEntry('love', `${spouse.name} رو بغل کردم.`, '🤗');
       spawnParticles(state.player.x, state.player.y - 20, '#ff69b4', 25);
       spouse.emotion.icon = '💖'; spouse.emotion.timer = 4000;
-      spouse.x = state.player.x + 30;
-      spouse.y = state.player.y;
+      spouse.x = state.player.x + 30; spouse.y = state.player.y;
       setTimeout(() => { if (state.spouseState === 'hugging') state.spouseState = 'following'; }, 3000);
       break;
     case 'kiss':
-      state.hp = Math.min(100, state.hp + 25);
-      state.energy = Math.min(100, state.energy + 30);
+      state.hp = Math.min(100, state.hp + 25); state.energy = Math.min(100, state.energy + 30);
       addFriend(spouse, 5);
-      notify(`💋 ${spouse.name} رو بوسیدی! عاشقانه بود`, 'love');
+      notify(`💋 ${spouse.name} رو بوسیدی!`, 'love');
       addJournalEntry('love', `${spouse.name} رو بوسیدم.`, '💋');
       spawnParticles(state.player.x, state.player.y - 20, '#ff1744', 35);
       spouse.emotion.icon = '😘'; spouse.emotion.timer = 4000;
       break;
     case 'dine':
       if (state.hunger < 30) { notify('اول باید غذا بخری!', 'bad'); break; }
-      state.hunger = Math.min(100, state.hunger + 40);
-      state.hp = Math.min(100, state.hp + 20);
+      state.hunger = Math.min(100, state.hunger + 40); state.hp = Math.min(100, state.hp + 20);
       addFriend(spouse, 8);
-      notify(`🍽️ با ${spouse.name} غذا خوردید. رمانتیک بود!`, 'love');
+      notify(`🍽️ با ${spouse.name} غذا خوردید!`, 'love');
       addJournalEntry('love', `با ${spouse.name} شام خوردیم.`, '🍽️');
       spouse.emotion.icon = '🥰'; spouse.emotion.timer = 4000;
       break;
@@ -1404,8 +1611,7 @@ function executeSpouseCommand(cmd) {
       } else notify(`${spouse.name} نتونست گل پیدا کنه`, 'info');
       break;
     case 'come_here':
-      spouse.x = state.player.x + 30;
-      spouse.y = state.player.y;
+      spouse.x = state.player.x + 30; spouse.y = state.player.y;
       state.spouseState = 'following';
       notify(`🏃 ${spouse.name} اومد پیشت`, 'love');
       addJournalEntry('love', `${spouse.name} رو صدا زدم بیاد پیشم.`, '🏃');
@@ -1422,20 +1628,12 @@ function updateSpouseAI(dt) {
   if (!spouse) return;
   const homeX = 2500, homeY = 3050;
   if (state.spouseState === 'following') {
-    const dx = state.player.x - spouse.x;
-    const dy = state.player.y - spouse.y;
+    const dx = state.player.x - spouse.x, dy = state.player.y - spouse.y;
     const dist = Math.hypot(dx, dy);
-    if (dist > 50) {
-      spouse.x += (dx / dist) * 2.2;
-      spouse.y += (dy / dist) * 2.2;
-      spouse.walking += dt;
-    } else if (dist < 35) {
-      spouse.x -= (dx / dist) * 0.5;
-      spouse.y -= (dy / dist) * 0.5;
-    }
+    if (dist > 50) { spouse.x += (dx / dist) * 2.2; spouse.y += (dy / dist) * 2.2; spouse.walking += dt; }
+    else if (dist < 35) { spouse.x -= (dx / dist) * 0.5; spouse.y -= (dy / dist) * 0.5; }
   } else if (state.spouseState === 'going_home') {
-    const dx = homeX - spouse.x;
-    const dy = homeY - spouse.y;
+    const dx = homeX - spouse.x, dy = homeY - spouse.y;
     const dist = Math.hypot(dx, dy);
     if (dist > 15) { spouse.x += (dx / dist) * 2; spouse.y += (dy / dist) * 2; spouse.walking += dt; }
     else { state.spouseState = 'idle'; updateSpouseStatus(); }
@@ -1466,7 +1664,7 @@ function tryRope() {
     return;
   }
   const hasRope = state.inventory.some(it => it && it.id === 'rope');
-  if (!hasRope) { notify('🪢 طناب نداری! از فروشگاه بخر', 'bad'); return; }
+  if (!hasRope) { notify('🪢 طناب نداری!', 'bad'); return; }
   let closest = null, minDist = 80;
   for (const a of state.animals) {
     if (!a.owned) continue;
@@ -1474,12 +1672,11 @@ function tryRope() {
     if (d < minDist) { minDist = d; closest = a; }
   }
   if (!closest) { notify('حیوان اهلی نزدیک نیست', 'bad'); return; }
-  closest.leading = true;
-  closest.tiedToTree = false;
+  closest.leading = true; closest.tiedToTree = false;
   p.leadingAnimalId = closest.name;
   state.stats.animalsLed++;
   notify(`🪢 ${closest.name} رو با طناب گرفتی!`, 'good');
-  addJournalEntry('mount', `${closest.name} رو با طناب گرفتم و با خودم می‌برم.`, '🪢');
+  addJournalEntry('mount', `${closest.name} رو با طناب گرفتم.`, '🪢');
   updateRopeStatus();
   saveGame(true);
 }
@@ -1495,12 +1692,9 @@ function tryTieToTree() {
   if (!closest) { notify('درختی نزدیک نیست', 'bad'); return; }
   const a = state.animals.find(x => x.name === p.leadingAnimalId);
   if (a) {
-    a.leading = true;
-    a.tiedToTree = true;
-    a.tiedX = closest.x + 20;
-    a.tiedY = closest.y;
-    a.x = a.tiedX;
-    a.y = a.tiedY;
+    a.leading = true; a.tiedToTree = true;
+    a.tiedX = closest.x + 20; a.tiedY = closest.y;
+    a.x = a.tiedX; a.y = a.tiedY;
     notify(`🌳 ${a.name} رو به درخت بستی`, 'good');
     addJournalEntry('mount', `${a.name} رو به درخت بستم.`, '🌳');
   }
@@ -1529,8 +1723,7 @@ function tryFreeFromTree() {
     notify('حیوانی که به درخت بسته باشه نزدیک نیست', 'bad');
     return;
   }
-  closest.tiedToTree = false;
-  closest.leading = false;
+  closest.tiedToTree = false; closest.leading = false;
   notify(`🪢 ${closest.name} رو آزاد کردی`, 'good');
   addJournalEntry('mount', `${closest.name} رو از درخت آزاد کردم.`, '🪢');
   saveGame(true);
@@ -1549,7 +1742,6 @@ function updateRopeStatus() {
 // INPUT
 // ================================================================
 document.addEventListener('keydown', e => {
-  // اگه چت فوکوس داره، کدوم کلیدها رو نگیر
   if (document.activeElement === document.getElementById('chatInput')) return;
   state.keys[e.key.toLowerCase()] = true;
   const k = e.key.toLowerCase();
@@ -1589,8 +1781,7 @@ function dismountNow() {
   const p = state.player;
   if (p.mount && p.mountedOn) {
     const a = p.mountedOn;
-    p.mount = null;
-    p.mountedOn = null;
+    p.mount = null; p.mountedOn = null;
     document.getElementById('mountStatus').style.display = 'none';
     notify(`🐾 از ${a.name} پیاده شدی`, 'info');
     saveGame(true);
@@ -1633,12 +1824,11 @@ function updatePlayer(dt) {
   if (p.leadingAnimalId) {
     const a = state.animals.find(x => x.name === p.leadingAnimalId);
     if (a && !a.tiedToTree) {
-      const dx = p.x - a.x, dy = p.y - a.y;
-      const d = Math.hypot(dx, dy);
+      const ddx = p.x - a.x, ddy = p.y - a.y;
+      const d = Math.hypot(ddx, ddy);
       if (d > 60) {
-        a.x += (dx / d) * 2;
-        a.y += (dy / d) * 2;
-        a.dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up');
+        a.x += (ddx / d) * 2; a.y += (ddy / d) * 2;
+        a.dir = Math.abs(ddx) > Math.abs(ddy) ? (ddx > 0 ? 'right' : 'left') : (ddy > 0 ? 'down' : 'up');
       }
     }
   }
@@ -1664,7 +1854,7 @@ function respawn() {
   state.hp = 100; state.hunger = 100; state.thirst = 100; state.energy = 100;
   state.player.x = 2000; state.player.y = 2000;
   if (state.player.mount) { state.player.mount = null; state.player.mountedOn = null; document.getElementById('mountStatus').style.display = 'none'; }
-  notify('💀 بیهوش شدی... توی میدون روستا به هوش اومدی', 'bad');
+  notify('💀 بیهوش شدی...', 'bad');
   addJournalEntry('money', 'بیهوش شدم و در میدون روستا به هوش اومدم.', '💀');
   saveGame(true);
 }
@@ -1728,7 +1918,7 @@ function updateTime(dt) {
 // NPC AI
 // ================================================================
 function updateNPCs(dt) {
-  if (!MP.isHost && MP.connected) return;  // مهمان NPCها رو لوکال آپدیت نمی‌کنه
+  if (!MP.isHost && MP.connected) return;
   const p = state.player;
   const now = state.time;
   state.offerCooldown = Math.max(0, state.offerCooldown - dt);
@@ -1764,70 +1954,48 @@ function triggerNPCOffer(npc) {
   const hour = state.time / 60;
   const possible = [];
   if (npc.relation > 60 && !npc.memory.invitedHome) {
-    possible.push({
-      type: 'invite_home', weight: 3,
-      text: () => `می‌دونی چیه؟ خونه‌م همین نزدیکه. بیا یه چایی با هم بخوریم!`,
-      accept: () => {
-        npc.memory.invitedHome = true;
-        state.energy = Math.min(100, state.energy + 15);
-        state.hp = Math.min(100, state.hp + 10);
-        addFriend(npc, 8);
-        notify(`🏠 به خونه‌ی ${npc.name} رفتی و چایی خوردی!`, 'good');
-        addJournalEntry('friend', `به خونه‌ی ${npc.name} دعوت شدم و چایی خوردیم.`, '🏠');
-        npc.emotion.icon = '😊'; npc.emotion.timer = 3000;
-      }
-    });
+    possible.push({ type: 'invite_home', weight: 3, text: () => `می‌دونی چیه؟ خونه‌م همین نزدیکه. بیا یه چایی با هم بخوریم!`, accept: () => {
+      npc.memory.invitedHome = true;
+      state.energy = Math.min(100, state.energy + 15); state.hp = Math.min(100, state.hp + 10);
+      addFriend(npc, 8);
+      notify(`🏠 به خونه‌ی ${npc.name} رفتی و چایی خوردی!`, 'good');
+      addJournalEntry('friend', `به خونه‌ی ${npc.name} دعوت شدم.`, '🏠');
+      npc.emotion.icon = '😊'; npc.emotion.timer = 3000;
+    }});
   }
   if (npc.relation > 40 && (state.time - npc.memory.lastGiftTime) > 5) {
-    possible.push({
-      type: 'give_gift', weight: 4,
-      text: () => `راستی، یه چیز کوچیک برات دارم. بیا، این مال تو!`,
-      accept: () => {
-        const giftPool = [
-          { id: 'bread', name: 'نان', icon: '🍞', effect: 'hunger', value: 30 },
-          { id: 'apple', name: 'سیب', icon: '🍎', effect: 'hunger', value: 15 },
-          { id: 'juice', name: 'آبمیوه', icon: '🧃', effect: 'thirst', value: 55 },
-          { id: 'herb', name: 'گیاه دارویی', icon: '🌿', effect: 'heal', value: 25 },
-          { id: 'flower', name: 'گل سرخ', icon: '🌹', effect: 'gift', value: 0 },
-          { id: 'chocolate', name: 'شکلات', icon: '🍫', effect: 'gift', value: 0 }
-        ];
-        let gift = giftPool[Math.floor(Math.random() * giftPool.length)];
-        if (npc.dialog === 'farmer') gift = giftPool[0];
-        else if (npc.dialog === 'nomad') gift = giftPool[4];
-        if (addItem(gift.id, gift.name, gift.icon, 1, gift.effect, gift.value)) {
-          notify(`🎁 ${npc.name} بهت ${gift.name} داد!`, 'gift');
-          addFriend(npc, 5);
-          state.stats.totalGiftsReceived++;
-          addJournalEntry('gift', `${npc.name} بهم ${gift.name} هدیه داد.`, '🎁');
-          npc.emotion.icon = '💝'; npc.emotion.timer = 3000;
-        }
+    possible.push({ type: 'give_gift', weight: 4, text: () => `راستی، یه چیز کوچیک برات دارم.`, accept: () => {
+      const giftPool = [
+        { id: 'bread', name: 'نان', icon: '🍞', effect: 'hunger', value: 30 },
+        { id: 'apple', name: 'سیب', icon: '🍎', effect: 'hunger', value: 15 },
+        { id: 'juice', name: 'آبمیوه', icon: '🧃', effect: 'thirst', value: 55 },
+        { id: 'herb', name: 'گیاه دارویی', icon: '🌿', effect: 'heal', value: 25 },
+        { id: 'flower', name: 'گل سرخ', icon: '🌹', effect: 'gift', value: 0 },
+        { id: 'chocolate', name: 'شکلات', icon: '🍫', effect: 'gift', value: 0 }
+      ];
+      let gift = giftPool[Math.floor(Math.random() * giftPool.length)];
+      if (npc.dialog === 'farmer') gift = giftPool[0];
+      else if (npc.dialog === 'nomad') gift = giftPool[4];
+      if (addItem(gift.id, gift.name, gift.icon, 1, gift.effect, gift.value)) {
+        notify(`🎁 ${npc.name} بهت ${gift.name} داد!`, 'gift');
+        addFriend(npc, 5);
+        state.stats.totalGiftsReceived++;
+        addJournalEntry('gift', `${npc.name} بهم ${gift.name} هدیه داد.`, '🎁');
+        npc.emotion.icon = '💝'; npc.emotion.timer = 3000;
       }
-    });
+    }});
   }
-  possible.push({
-    type: 'chat', weight: 5,
-    text: () => {
-      const chats = ['هوای امروز چقدر خوبه، نه؟', 'امروز کار و کاسبی چطور بود؟', 'راستی، شنیدم یه شتر وحشی اون طرف‌ها دیده شده!', 'خوبی؟ من که همیشه خوشحالم تو رو می‌بینم!'];
-      return chats[Math.floor(Math.random() * chats.length)];
-    },
-    accept: () => {
-      addFriend(npc, 3);
-      notify(`💬 با ${npc.name} گپ زدی`, 'info');
-      npc.emotion.icon = '😊'; npc.emotion.timer = 2000;
-    }
-  });
+  possible.push({ type: 'chat', weight: 5, text: () => {
+    const chats = ['هوای امروز چقدر خوبه، نه؟', 'امروز کار و کاسبی چطور بود؟', 'راستی، شنیدم یه شتر وحشی اون طرف‌ها دیده شده!', 'خوبی؟ من که همیشه خوشحالم تو رو می‌بینم!'];
+    return chats[Math.floor(Math.random() * chats.length)];
+  }, accept: () => { addFriend(npc, 3); notify(`💬 با ${npc.name} گپ زدی`, 'info'); npc.emotion.icon = '😊'; npc.emotion.timer = 2000; }});
   if (hour > 20 || hour < 5) {
-    possible.push({
-      type: 'rest', weight: 6,
-      text: () => `شب‌ه و هوا سرده. اگه خسته‌ای، استراحت کن.`,
-      accept: () => {
-        state.energy = Math.min(100, state.energy + 20);
-        state.hp = Math.min(100, state.hp + 15);
-        addFriend(npc, 4);
-        notify(`🌙 یه کم استراحت کردی`, 'good');
-        npc.emotion.icon = '😌'; npc.emotion.timer = 2000;
-      }
-    });
+    possible.push({ type: 'rest', weight: 6, text: () => `شب‌ه و هوا سرده.`, accept: () => {
+      state.energy = Math.min(100, state.energy + 20); state.hp = Math.min(100, state.hp + 15);
+      addFriend(npc, 4);
+      notify(`🌙 یه کم استراحت کردی`, 'good');
+      npc.emotion.icon = '😌'; npc.emotion.timer = 2000;
+    }});
   }
   const totalWeight = possible.reduce((s, o) => s + o.weight, 0);
   let r = Math.random() * totalWeight;
@@ -1856,15 +2024,11 @@ function showNPCOffer(npc, text, onAccept, onReject) {
   document.getElementById('npcOffer').style.display = 'block';
 }
 
-function closeOffer() {
-  state.npcOffer = null;
-  document.getElementById('npcOffer').style.display = 'none';
-}
-
+function closeOffer() { state.npcOffer = null; document.getElementById('npcOffer').style.display = 'none'; }
 function rejectOffer() { if (state.npcOffer) state.npcOffer.onReject(); }
 
 // ================================================================
-// ANIMALS AI
+// ANIMALS
 // ================================================================
 function updateAnimals(dt) {
   if (!MP.isHost && MP.connected) return;
@@ -1884,8 +2048,7 @@ function updateAnimals(dt) {
       const dx = a.targetX - a.x, dy = a.targetY - a.y;
       const d = Math.hypot(dx, dy);
       if (d > 4) {
-        a.x += (dx / d) * 0.4;
-        a.y += (dy / d) * 0.4;
+        a.x += (dx / d) * 0.4; a.y += (dy / d) * 0.4;
         if (Math.abs(dx) > Math.abs(dy)) a.dir = dx > 0 ? 'right' : 'left';
         else a.dir = dy > 0 ? 'down' : 'up';
         a.animTimer += dt;
@@ -1893,39 +2056,6 @@ function updateAnimals(dt) {
       } else a.animFrame = 0;
     }
   }
-}
-
-// ================================================================
-// MULTIPLAYER SYNC
-// ================================================================
-function syncMultiplayer(dt) {
-  if (!MP.connected) return;
-  MP.sendTimer += dt;
-  if (MP.sendTimer >= MP.SEND_INTERVAL) {
-    MP.sendTimer = 0;
-    const p = state.player;
-    sendToFriend({ type: 'state', x: p.x, y: p.y, dir: p.dir, animFrame: p.animFrame });
-  }
-  if (MP.isHost) {
-    MP.lastWorldSync += dt;
-    if (MP.lastWorldSync > MP.WORLD_SYNC_INTERVAL) {
-      MP.lastWorldSync = 0;
-      sendToFriend({
-        type: 'world',
-        npcs: state.npcs.map(n => ({ name: n.name, x: n.x, y: n.y, relation: n.relation })),
-        animals: state.animals.map(a => ({ name: a.name, x: a.x, y: a.y, owned: a.owned, forSale: a.forSale }))
-      });
-    }
-    MP.lastTimeSync += dt;
-    if (MP.lastTimeSync > MP.TIME_SYNC_INTERVAL) {
-      MP.lastTimeSync = 0;
-      sendToFriend({ type: 'time', day: state.day, time: state.time });
-    }
-  }
-  // نرم‌سازی موقعیت رفیق (interpolation)
-  MP.friend.x += (MP.friend.targetX - MP.friend.x) * 0.35;
-  MP.friend.y += (MP.friend.targetY - MP.friend.y) * 0.35;
-  if (MP.friend.bubbleTimer > 0) MP.friend.bubbleTimer -= dt;
 }
 
 // ================================================================
@@ -2000,7 +2130,6 @@ function draw() {
     drawables.push({ y: a.y, draw: () => drawAnimal(a.x - cx, a.y - cy, a, hour) });
   }
   for (const n of state.npcs) drawables.push({ y: n.y, draw: () => drawNPC(n.x - cx, n.y - cy, n, hour) });
-  // رفیق
   if (MP.connected && MP.friend.active) {
     drawables.push({ y: MP.friend.y, draw: () => drawFriend(MP.friend.x - cx, MP.friend.y - cy) });
   }
@@ -2010,9 +2139,7 @@ function draw() {
   if (state.player.leadingAnimalId) {
     const a = state.animals.find(x => x.name === state.player.leadingAnimalId);
     if (a) {
-      ctx.strokeStyle = '#8b6f47';
-      ctx.lineWidth = 2.5;
-      ctx.setLineDash([4, 3]);
+      ctx.strokeStyle = '#8b6f47'; ctx.lineWidth = 2.5; ctx.setLineDash([4, 3]);
       ctx.beginPath();
       ctx.moveTo(state.player.x - cx, state.player.y - cy);
       ctx.lineTo(a.x - cx, a.y - cy);
@@ -2097,12 +2224,6 @@ function drawBuilding(x, y, b, hour) {
   ctx.fillRect(x + 14, y + 18, 22, 22); ctx.fillRect(x + b.w - 36, y + 18, 22, 22);
   ctx.strokeStyle = '#3e2723'; ctx.lineWidth = 2;
   ctx.strokeRect(x + 14, y + 18, 22, 22); ctx.strokeRect(x + b.w - 36, y + 18, 22, 22);
-  ctx.beginPath();
-  ctx.moveTo(x + 14, y + 18); ctx.lineTo(x + 36, y + 40);
-  ctx.moveTo(x + 36, y + 18); ctx.lineTo(x + 14, y + 40);
-  ctx.moveTo(x + b.w - 36, y + 18); ctx.lineTo(x + b.w - 14, y + 40);
-  ctx.moveTo(x + b.w - 14, y + 18); ctx.lineTo(x + b.w - 36, y + 40);
-  ctx.stroke();
   ctx.fillStyle = '#fff'; ctx.font = 'bold 12px Tahoma'; ctx.textAlign = 'center';
   ctx.strokeStyle = 'rgba(0,0,0,0.8)'; ctx.lineWidth = 3;
   ctx.strokeText(b.name, x + b.w / 2, y - 52); ctx.fillText(b.name, x + b.w / 2, y - 52);
@@ -2290,7 +2411,6 @@ function drawPlayer(x, y, hour) {
   else if (p.dir === 'right') ctx.fillRect(x + 4, y - 16 + bob, 2, 3);
   ctx.fillStyle = '#b0bec5'; ctx.fillRect(x + 11, y - 4 + bob, 3, 15);
   ctx.fillStyle = '#795548'; ctx.fillRect(x + 10, y + 8 + bob, 4, 4);
-  // نام بازیکن
   ctx.fillStyle = '#2ecc71';
   ctx.font = 'bold 12px Tahoma'; ctx.textAlign = 'center';
   ctx.strokeStyle = 'rgba(0,0,0,0.9)'; ctx.lineWidth = 3;
@@ -2303,7 +2423,6 @@ function drawPlayer(x, y, hour) {
 
 function drawFriend(x, y) {
   const f = MP.friend;
-  // هاله‌ی آبی مخصوص رفیق برای تشخیص راحت
   ctx.fillStyle = `rgba(52, 152, 219, ${0.15 + Math.sin(performance.now() / 500) * 0.05})`;
   ctx.beginPath(); ctx.arc(x, y, 30, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = 'rgba(0,0,0,0.4)';
@@ -2320,13 +2439,11 @@ function drawFriend(x, y) {
     ctx.fillRect(x - 4, y - 16 + bob, 2, 3); ctx.fillRect(x + 2, y - 16 + bob, 2, 3);
   } else if (f.dir === 'left') ctx.fillRect(x - 6, y - 16 + bob, 2, 3);
   else if (f.dir === 'right') ctx.fillRect(x + 4, y - 16 + bob, 2, 3);
-  // نام
   ctx.fillStyle = '#3498db';
   ctx.font = 'bold 12px Tahoma'; ctx.textAlign = 'center';
   ctx.strokeStyle = 'rgba(0,0,0,0.9)'; ctx.lineWidth = 3;
   const nameLabel = '👤 ' + f.name;
   ctx.strokeText(nameLabel, x, y - 35); ctx.fillText(nameLabel, x, y - 35);
-  // حباب چت
   if (f.bubbleTimer > 0 && f.bubbleMsg) {
     ctx.font = 'bold 12px Tahoma';
     const tw = Math.min(220, ctx.measureText(f.bubbleMsg).width + 24);
@@ -2336,13 +2453,9 @@ function drawFriend(x, y) {
     ctx.strokeStyle = '#3498db';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    if (ctx.roundRect) {
-      ctx.roundRect(bx, by, tw, 28, 8);
-    } else {
-      ctx.rect(bx, by, tw, 28);
-    }
+    if (ctx.roundRect) ctx.roundRect(bx, by, tw, 28, 8);
+    else ctx.rect(bx, by, tw, 28);
     ctx.fill(); ctx.stroke();
-    // فلش کوچک
     ctx.beginPath();
     ctx.moveTo(x - 5, by + 28);
     ctx.lineTo(x + 5, by + 28);
@@ -2352,7 +2465,6 @@ function drawFriend(x, y) {
     ctx.fill();
     ctx.fillStyle = '#fff';
     ctx.textAlign = 'center';
-    // اگه طولانی بود کوتاه کن
     let displayMsg = f.bubbleMsg;
     if (displayMsg.length > 30) displayMsg = displayMsg.substring(0, 28) + '...';
     ctx.fillText(displayMsg, x, by + 19);
@@ -2381,7 +2493,6 @@ function drawMinimap() {
     else mctx.fillStyle = n.relation > 40 ? '#e056fd' : '#f1c40f';
     mctx.beginPath(); mctx.arc(n.x * scale, n.y * scale, 2.5, 0, Math.PI * 2); mctx.fill();
   }
-  // رفیق روی مینی‌مپ
   if (MP.connected && MP.friend.active) {
     mctx.fillStyle = '#3498db';
     mctx.beginPath(); mctx.arc(MP.friend.x * scale, MP.friend.y * scale, 3.5, 0, Math.PI * 2); mctx.fill();
@@ -2476,7 +2587,7 @@ function openPondPanel(pond) {
     const rel = bestCompanion.relation;
     const isClose = rel >= 70;
     const isFriend = rel >= 40;
-    if (isSpouse) subtitle.textContent = `${bestCompanion.name} همراته. هوا دل‌انگیزه و کنار هم بودن حس خوبی داره...`;
+    if (isSpouse) subtitle.textContent = `${bestCompanion.name} همراته. هوا دل‌انگیزه...`;
     else if (isClose) subtitle.textContent = `با ${bestCompanion.name} اومدی کنار ${pond.name}.`;
     else if (isFriend) subtitle.textContent = `با ${bestCompanion.name} کنار ${pond.name} هستی.`;
     if (isSpouse) {
@@ -2484,7 +2595,7 @@ function openPondPanel(pond) {
         state.hp = Math.min(100, state.hp + 20); state.energy = Math.min(100, state.energy + 20);
         addFriend(bestCompanion, 8);
         notify(`💕 لحظه‌های عاشقانه کنار ${pond.name}`, 'love');
-        addJournalEntry('pond', `کنار ${pond.name} با ${bestCompanion.name} نشستیم و دست هم رو گرفتیم.`, '💕');
+        addJournalEntry('pond', `کنار ${pond.name} با ${bestCompanion.name} نشستیم.`, '💕');
         bestCompanion.emotion.icon = '💖'; bestCompanion.emotion.timer = 4000;
         spawnParticles(state.player.x, state.player.y - 20, '#ff69b4', 30);
         closePondPanel();
@@ -2493,16 +2604,16 @@ function openPondPanel(pond) {
         state.energy = Math.max(0, state.energy - 10);
         addFriend(bestCompanion, 10);
         notify(`💦 آب‌بازی کردید!`, 'love');
-        addJournalEntry('pond', `با ${bestCompanion.name} کنار ${pond.name} آب‌بازی کردیم.`, '💦');
+        addJournalEntry('pond', `با ${bestCompanion.name} آب‌بازی کردیم.`, '💦');
         bestCompanion.emotion.icon = '😄'; bestCompanion.emotion.timer = 3000;
         spawnParticles(bestCompanion.x, bestCompanion.y - 20, '#4fa3d1', 30);
         closePondPanel();
       });
-      addPondChoice(choicesEl, `🌸 براش یه گل از کنار حوضچه بچین`, 'special', () => {
+      addPondChoice(choicesEl, `🌸 براش یه گل بچین`, 'special', () => {
         if (addItem('flower', 'گل سرخ', '🌹', 1, 'gift', 0)) {
           addFriend(bestCompanion, 12);
-          notify(`🌸 یه گل سرخ چیدی و به ${bestCompanion.name} دادی!`, 'love');
-          addJournalEntry('pond', `کنار ${pond.name} یه گل سرخ چیدم و به ${bestCompanion.name} دادم.`, '🌹');
+          notify(`🌸 یه گل سرخ چیدی!`, 'love');
+          addJournalEntry('pond', `کنار ${pond.name} یه گل چیدم و به ${bestCompanion.name} دادم.`, '🌹');
           bestCompanion.emotion.icon = '😍'; bestCompanion.emotion.timer = 4000;
         }
         closePondPanel();
@@ -2517,16 +2628,16 @@ function openPondPanel(pond) {
         closePondPanel();
       });
     } else if (isClose) {
-      addPondChoice(choicesEl, `🪨 کنار هم بشینیم و از زندگی حرف بزنیم`, 'special', () => {
+      addPondChoice(choicesEl, `🪨 کنار هم بشینیم`, 'special', () => {
         state.energy = Math.min(100, state.energy + 15);
         addFriend(bestCompanion, 10);
-        addJournalEntry('pond', `کنار ${pond.name} با ${bestCompanion.name} از زندگی حرف زدیم.`, '💬');
+        addJournalEntry('pond', `کنار ${pond.name} با ${bestCompanion.name} حرف زدیم.`, '💬');
         bestCompanion.emotion.icon = '😊'; bestCompanion.emotion.timer = 3000;
         closePondPanel();
       });
       addPondChoice(choicesEl, `🎵 براش آواز بخون`, 'special', () => {
         addFriend(bestCompanion, 15);
-        addJournalEntry('pond', `کنار ${pond.name} برای ${bestCompanion.name} آواز خوندم.`, '🎵');
+        addJournalEntry('pond', `برای ${bestCompanion.name} آواز خوندم.`, '🎵');
         bestCompanion.emotion.icon = '💝'; bestCompanion.emotion.timer = 3000;
         closePondPanel();
       });
@@ -2534,13 +2645,13 @@ function openPondPanel(pond) {
       addPondChoice(choicesEl, `🗣️ با هم گپ بزنیم`, () => {
         state.energy = Math.min(100, state.energy + 10);
         addFriend(bestCompanion, 6);
-        addJournalEntry('pond', `با ${bestCompanion.name} کنار ${pond.name} گپ زدیم.`, '💬');
+        addJournalEntry('pond', `با ${bestCompanion.name} گپ زدیم.`, '💬');
         closePondPanel();
       });
     }
   } else {
-    if (hour < 6 || hour > 20) subtitle.textContent = `شب کنار ${pond.name}. صدای آب و ستاره‌ها...`;
-    else subtitle.textContent = `تنها کنار ${pond.name} هستی. آب زلاله و نسیم خنکی میاد.`;
+    if (hour < 6 || hour > 20) subtitle.textContent = `شب کنار ${pond.name}.`;
+    else subtitle.textContent = `تنها کنار ${pond.name} هستی.`;
     addPondChoice(choicesEl, `💧 دستات رو بشور`, () => {
       state.thirst = Math.min(100, state.thirst + 30);
       addJournalEntry('pond', `تنها کنار ${pond.name} دستام رو شستم.`, '💧');
@@ -2599,7 +2710,7 @@ function trySteal() {
   const npc = t.obj;
   if (npc.dialog === 'thief') { notify('از یه دزد نمیشه دزدی کرد!', 'bad'); return; }
   if (npc.name === state.spouse) { notify('از همسرت دزدی؟! 😱', 'bad'); return; }
-  if (npc.relation > 50) { notify(`این دوسته! چطور می‌تونی دزدی کنی؟!`, 'bad'); return; }
+  if (npc.relation > 50) { notify(`این دوسته!`, 'bad'); return; }
   let successChance = 50;
   const hour = state.time / 60;
   if (hour >= 21 || hour < 5) successChance += 15;
@@ -2640,8 +2751,8 @@ function trySteal() {
       showStealResult('✅ دزدی موفق', `${loot} سکه از ${npc.name} کش رفتی!`, '🔓', successChance, true);
       addJournalEntry('steal', `از ${npc.name} ${loot} سکه دزدیدم.`, '🔓');
     } else {
-      showStealResult('😰 نزدیک بود لو بره', `${loot} سکه گرفتی ولی تقریباً دیدت!`, '😰', successChance, true);
-      addJournalEntry('steal', `از ${npc.name} ${loot} سکه دزدیدم. نزدیک لو رفتن.`, '😰');
+      showStealResult('😰 نزدیک بود لو بره', `${loot} سکه گرفتی!`, '😰', successChance, true);
+      addJournalEntry('steal', `از ${npc.name} ${loot} سکه دزدیدم.`, '😰');
     }
     spawnParticles(npc.x, npc.y - 20, '#f1c40f', 20);
     updateQuestProgressByType('steal', 1);
@@ -2652,7 +2763,7 @@ function trySteal() {
     state.hp -= damage;
     const failRoll = Math.random();
     if (failRoll < 0.3) {
-      showStealResult('🚨 لو رفتی!', `${npc.name} فریاد زد! کتک خوردی (${damage}- جان)`, '🚨', successChance, false);
+      showStealResult('🚨 لو رفتی!', `${npc.name} فریاد زد! (${damage}- جان)`, '🚨', successChance, false);
       addJournalEntry('steal', `از ${npc.name} دزدی می‌کردم ولی لو رفتم.`, '🚨');
     } else if (failRoll < 0.7) {
       showStealResult('👀 دیده شدی', `${npc.name} نگاه بدی بهت کرد (${damage}- جان)`, '👀', successChance, false);
@@ -2726,7 +2837,7 @@ function tryTame(a) {
     state.stats.animalsTamed++;
     updateQuestProgressByType('mount', 1);
     if (a.type === 'camel') updateQuestProgressByType('tame_camel', 1);
-    addJournalEntry('mount', `${a.name} (${a.type === 'camel' ? 'شتر' : 'اسب'}) رو رام کردم!`, '🐎');
+    addJournalEntry('mount', `${a.name} رو رام کردم!`, '🐎');
     setTimeout(() => mountAnimal(a), 500);
     saveGame(true);
   } else {
@@ -3111,8 +3222,8 @@ function useItem(i) {
   else if (it.effect === 'energy') { state.energy = Math.min(100, state.energy + it.value); notify(`⚡ ${it.name}`, 'good'); }
   else if (it.effect === 'heal') { state.hp = Math.min(100, state.hp + it.value); notify(`❤️ ${it.name}`, 'good'); }
   else if (it.effect === 'gift') { notify(`این آیتم برای هدیه دادنه.`, 'info'); return; }
-  else if (it.effect === 'rope') { notify(`طناب رو با R استفاده کن (نزدیک حیوان اهلی)`, 'info'); return; }
-  else if (it.effect === 'wedding') { notify(`حلقه‌ی ازدواج رو با خواستگاری استفاده کن (وقتی رابطه ≥۹۰)`, 'info'); return; }
+  else if (it.effect === 'rope') { notify(`طناب رو با R استفاده کن`, 'info'); return; }
+  else if (it.effect === 'wedding') { notify(`حلقه‌ی ازدواج رو با خواستگاری استفاده کن`, 'info'); return; }
   it.count--;
   if (it.count <= 0) state.inventory[i] = null;
   renderInventory();
@@ -3154,10 +3265,7 @@ function spawnParticles(x, y, color, count) {
   for (let i = 0; i < count; i++) {
     const a = Math.random() * Math.PI * 2;
     const sp = 1 + Math.random() * 3;
-    state.particles.push({
-      x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 1,
-      size: 2 + Math.random() * 3, color, life: 45, maxLife: 45
-    });
+    state.particles.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 1, size: 2 + Math.random() * 3, color, life: 45, maxLife: 45 });
   }
 }
 
@@ -3249,6 +3357,7 @@ let lastAutoSave = performance.now();
 function loop(now) {
   const dt = Math.min(50, now - lastTime);
   lastTime = now;
+  updateHeartbeat(dt);
   updatePlayer(dt);
   updateNPCs(dt);
   updateSpouseAI(dt);
@@ -3272,7 +3381,7 @@ function loop(now) {
 }
 
 // ================================================================
-// LOADING + INIT
+// LOADING
 // ================================================================
 let loadProgress = 0;
 const loadBar = document.getElementById('loadBar');
@@ -3292,47 +3401,9 @@ const loadInterval = setInterval(() => {
   }
 }, 120);
 
-// ================================================================
-// MP MENU BUTTONS
-// ================================================================
-document.getElementById('btnHost').onclick = () => {
-  if (!MP.peer) initPeer();
-  MP.isHost = true;
-  document.getElementById('hostBox').style.display = 'block';
-  document.getElementById('mpStatus').textContent = '⏳ منتظر اتصال رفیقت...';
-};
-
-document.getElementById('btnJoin').onclick = () => {
-  if (!MP.peer) initPeer();
-  document.getElementById('joinBox').style.display = 'flex';
-};
-
-document.getElementById('btnConnect').onclick = () => {
-  const id = document.getElementById('friendIdInput').value.trim();
-  if (!id) return;
-  MP.isHost = false;
-  connectToFriend(id);
-};
-
-document.getElementById('btnCopy').onclick = () => {
-  const link = document.getElementById('myLinkBox').textContent;
-  navigator.clipboard.writeText(link).then(() => notify('📋 کپی شد!', 'good')).catch(() => {
-    const range = document.createRange();
-    range.selectNode(document.getElementById('myLinkBox'));
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-    document.execCommand('copy');
-    notify('📋 کپی شد!', 'good');
-  });
-};
-
-document.getElementById('btnSolo').onclick = () => {
-  MP.connected = false;
-  MP.isHost = false;
-  startGame();
-};
-
 function startGame() {
+  MP.myReady = true;
+  setMyStatus('in-game');
   document.getElementById('mpMenu').style.display = 'none';
   document.getElementById('game').style.display = 'block';
   document.getElementById('loading').style.display = 'none';
@@ -3342,16 +3413,23 @@ function startGame() {
   resize();
 }
 
-// چک URL برای join خودکار
+// ================================================================
+// URL AUTO-JOIN
+// ================================================================
 window.addEventListener('load', () => {
   const params = new URLSearchParams(location.search);
   const joinId = params.get('join');
   if (joinId) {
-    initPeer();
+    mpLog(`🔗 لینک join تشخیص داده شد: ${joinId}`, 'info');
     setTimeout(() => {
+      document.getElementById('mpStep1').style.display = 'none';
+      document.getElementById('mpStepHost').style.display = 'none';
+      document.getElementById('mpStepJoin').style.display = 'block';
+      document.getElementById('friendIdInput').value = joinId;
       MP.isHost = false;
-      connectToFriend(joinId);
-    }, 1200);
+      initPeer();
+      setTimeout(() => connectToFriend(joinId), 800);
+    }, 200);
   }
 });
 
