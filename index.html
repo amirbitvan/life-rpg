@@ -2,18 +2,14 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>زندگی - Life RPG v5</title>
+<title>زندگی - Life RPG v6 (دو نفره)</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
   body { background: #0a0a0f; font-family: Tahoma, sans-serif; overflow: hidden; color: #fff; }
   #game { position: relative; width: 100vw; height: 100vh; overflow: hidden; background: #1a3d1a; }
   canvas { display: block; image-rendering: pixelated; }
 
-  #hud {
-    position: absolute; top: 10px; right: 10px;
-    background: rgba(0,0,0,0.78); border: 2px solid #c9a961; border-radius: 10px;
-    padding: 10px 14px; min-width: 210px; font-size: 13px; backdrop-filter: blur(5px);
-  }
+  #hud { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.78); border: 2px solid #c9a961; border-radius: 10px; padding: 10px 14px; min-width: 210px; font-size: 13px; backdrop-filter: blur(5px); }
   #hud .stat { display: flex; justify-content: space-between; margin: 5px 0; align-items: center; }
   .bar { width: 105px; height: 10px; background: #333; border-radius: 5px; overflow: hidden; border: 1px solid #555; }
   .bar-fill { height: 100%; transition: width 0.3s; }
@@ -23,83 +19,38 @@
   .thirst { background: linear-gradient(90deg, #2980b9, #3498db); }
   .friend { background: linear-gradient(90deg, #9b59b6, #e056fd); }
 
-  #clock {
-    position: absolute; top: 10px; left: 10px;
-    background: rgba(0,0,0,0.78); border: 2px solid #c9a961; border-radius: 10px;
-    padding: 10px 14px; min-width: 170px;
-  }
+  #clock { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.78); border: 2px solid #c9a961; border-radius: 10px; padding: 10px 14px; min-width: 170px; }
   #clock .time { font-size: 22px; color: #f1c40f; font-weight: bold; }
   #clock .day { color: #c9a961; font-size: 12px; }
   #clock .phase { color: #ddd; font-size: 12px; margin-top: 4px; display:flex; align-items:center; gap:6px; }
   #clock .phase-icon { font-size: 18px; }
   #clock .sun-arc { position: relative; height: 4px; background: #222; border-radius: 2px; margin-top: 6px; overflow: hidden; }
-  #clock .sun-arc::after {
-    content: ''; position: absolute; top: -4px; width: 8px; height: 12px; border-radius: 50%;
-    background: #f1c40f; box-shadow: 0 0 8px #f1c40f; transform: translateX(-50%);
-    transition: left 0.5s linear;
-  }
   #clock .speed { font-size: 10px; color: #888; margin-top: 4px; }
 
-  #saveIndicator {
-    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
-    background: rgba(46, 204, 113, 0.9); color: #000;
-    padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: bold;
-    display: none; z-index: 300;
-  }
+  #saveIndicator { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(46, 204, 113, 0.9); color: #000; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: bold; display: none; z-index: 300; }
   #saveIndicator.show { display: block; animation: savePop 2s; }
-  @keyframes savePop {
-    0% { transform: translateX(-50%) translateY(-30px); opacity: 0; }
-    15%, 85% { transform: translateX(-50%) translateY(0); opacity: 1; }
-    100% { transform: translateX(-50%) translateY(-30px); opacity: 0; }
-  }
+  @keyframes savePop { 0% { transform: translateX(-50%) translateY(-30px); opacity: 0; } 15%, 85% { transform: translateX(-50%) translateY(0); opacity: 1; } 100% { transform: translateX(-50%) translateY(-30px); opacity: 0; } }
 
-  #inventoryPanel {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    background: rgba(20,15,10,0.97); border: 3px solid #c9a961; border-radius: 15px;
-    padding: 20px; width: 540px; max-width: 92vw; display: none; z-index: 100;
-    box-shadow: 0 0 40px rgba(201,169,97,0.4);
-  }
+  #inventoryPanel { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(20,15,10,0.97); border: 3px solid #c9a961; border-radius: 15px; padding: 20px; width: 540px; max-width: 92vw; display: none; z-index: 100; box-shadow: 0 0 40px rgba(201,169,97,0.4); }
   #inventoryPanel h2 { color: #c9a961; margin-bottom: 12px; text-align: center; border-bottom: 1px solid #444; padding-bottom: 8px; }
   .inv-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 7px; margin-bottom: 12px; }
-  .inv-slot {
-    aspect-ratio: 1; background: #2a2018; border: 2px solid #555; border-radius: 8px;
-    display: flex; align-items: center; justify-content: center; font-size: 24px;
-    cursor: pointer; position: relative; transition: all 0.2s;
-  }
+  .inv-slot { aspect-ratio: 1; background: #2a2018; border: 2px solid #555; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; position: relative; transition: all 0.2s; }
   .inv-slot:hover { border-color: #c9a961; background: #3a2a18; transform: scale(1.05); }
   .inv-slot .count { position: absolute; bottom: 1px; left: 4px; font-size: 11px; color: #f1c40f; font-weight: bold; text-shadow: 1px 1px 2px #000; }
-  .inv-slot .tip {
-    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
-    background: #000; padding: 4px 8px; border-radius: 5px; font-size: 11px;
-    white-space: nowrap; display: none; border: 1px solid #c9a961; z-index: 5;
-  }
+  .inv-slot .tip { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #000; padding: 4px 8px; border-radius: 5px; font-size: 11px; white-space: nowrap; display: none; border: 1px solid #c9a961; z-index: 5; }
   .inv-slot:hover .tip { display: block; }
 
-  #journalPanel {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    background: linear-gradient(180deg, #2a1f10, #1a1208); border: 4px solid #c9a961;
-    border-radius: 15px; padding: 25px; width: 780px; max-width: 94vw; height: 620px; max-height: 90vh;
-    display: none; z-index: 105; box-shadow: 0 0 60px rgba(201,169,97,0.5);
-    flex-direction: column;
-  }
+  #journalPanel { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(180deg, #2a1f10, #1a1208); border: 4px solid #c9a961; border-radius: 15px; padding: 25px; width: 780px; max-width: 94vw; height: 620px; max-height: 90vh; display: none; z-index: 105; box-shadow: 0 0 60px rgba(201,169,97,0.5); flex-direction: column; }
   #journalPanel h2 { color: #f1c40f; text-align: center; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 2px solid #c9a961; font-size: 22px; }
   .journal-tabs { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
-  .journal-tab {
-    background: #3a2a18; border: 2px solid #c9a961; color: #c9a961;
-    padding: 8px 16px; border-radius: 8px; cursor: pointer;
-    font-family: inherit; font-size: 13px; transition: all 0.2s;
-  }
+  .journal-tab { background: #3a2a18; border: 2px solid #c9a961; color: #c9a961; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 13px; transition: all 0.2s; }
   .journal-tab:hover { background: #4a3520; }
   .journal-tab.active { background: #c9a961; color: #000; font-weight: bold; }
   .journal-content { flex: 1; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid #444; }
   .journal-content::-webkit-scrollbar { width: 8px; }
   .journal-content::-webkit-scrollbar-track { background: #1a1208; }
   .journal-content::-webkit-scrollbar-thumb { background: #c9a961; border-radius: 4px; }
-  .journal-entry {
-    background: rgba(50, 35, 20, 0.6); border-right: 4px solid #c9a961;
-    padding: 10px 14px; margin-bottom: 8px; border-radius: 6px;
-    line-height: 1.7; font-size: 13px;
-  }
+  .journal-entry { background: rgba(50, 35, 20, 0.6); border-right: 4px solid #c9a961; padding: 10px 14px; margin-bottom: 8px; border-radius: 6px; line-height: 1.7; font-size: 13px; }
   .journal-entry .time { color: #888; font-size: 11px; margin-bottom: 4px; }
   .journal-entry.gift { border-color: #e056fd; }
   .journal-entry.friend { border-color: #2ecc71; }
@@ -111,16 +62,8 @@
   .journal-entry.marriage { border-color: #ff1744; }
   .journal-entry.quest { border-color: #9b59b6; }
   .journal-empty { color: #666; text-align: center; padding: 30px; font-size: 14px; }
-  .relationship-card {
-    background: rgba(50, 35, 20, 0.7); border-radius: 10px;
-    padding: 12px; margin-bottom: 10px; display: flex; gap: 12px; align-items: center;
-    border: 1px solid #555;
-  }
-  .relationship-card .avatar {
-    width: 50px; height: 50px; border-radius: 50%; display: flex;
-    align-items: center; justify-content: center; font-size: 24px;
-    border: 3px solid #c9a961;
-  }
+  .relationship-card { background: rgba(50, 35, 20, 0.7); border-radius: 10px; padding: 12px; margin-bottom: 10px; display: flex; gap: 12px; align-items: center; border: 1px solid #555; }
+  .relationship-card .avatar { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; border: 3px solid #c9a961; }
   .relationship-card .info { flex: 1; }
   .relationship-card .name { color: #f1c40f; font-weight: bold; margin-bottom: 4px; }
   .relationship-card .status { font-size: 12px; color: #ddd; margin-bottom: 6px; }
@@ -130,23 +73,13 @@
   .badge.friend { background: #2ecc71; color: #000; }
   .badge.close { background: #e056fd; color: #000; }
   .badge.love { background: #ff69b4; color: #000; }
-  .badge.fiance { background: #f1c40f; color: #000; }
   .badge.spouse { background: #e74c3c; color: #fff; }
 
-  #dialogBox {
-    position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-    background: rgba(10,5,0,0.96); border: 3px solid #c9a961; border-radius: 12px;
-    padding: 15px 20px; width: 720px; max-width: 92vw; display: none; z-index: 50;
-    box-shadow: 0 0 30px rgba(0,0,0,0.8);
-  }
+  #dialogBox { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(10,5,0,0.96); border: 3px solid #c9a961; border-radius: 12px; padding: 15px 20px; width: 720px; max-width: 92vw; display: none; z-index: 50; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
   #dialogName { color: #f1c40f; font-weight: bold; margin-bottom: 8px; font-size: 15px; }
   #dialogText { color: #eee; line-height: 1.7; font-size: 14px; margin-bottom: 12px; white-space: pre-line; }
   #dialogChoices { display: flex; flex-direction: column; gap: 6px; max-height: 260px; overflow-y: auto; }
-  .choice-btn {
-    background: #2a1f10; border: 1px solid #c9a961; color: #fff;
-    padding: 8px 12px; text-align: right; cursor: pointer; border-radius: 6px;
-    font-family: inherit; font-size: 13px; transition: all 0.2s;
-  }
+  .choice-btn { background: #2a1f10; border: 1px solid #c9a961; color: #fff; padding: 8px 12px; text-align: right; cursor: pointer; border-radius: 6px; font-family: inherit; font-size: 13px; transition: all 0.2s; }
   .choice-btn:hover { background: #c9a961; color: #000; }
   .choice-btn.gift { border-color: #e056fd; color: #e056fd; }
   .choice-btn.gift:hover { background: #e056fd; color: #000; }
@@ -160,12 +93,7 @@
   .choice-btn.command:hover { background: #3498db; color: #000; }
 
   #notifications { position: absolute; top: 110px; right: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 200; }
-  .notif {
-    background: rgba(20,15,10,0.95); border-right: 4px solid #f1c40f;
-    padding: 10px 15px; border-radius: 6px; font-size: 13px; color: #fff;
-    animation: slideIn 0.3s, fadeOut 0.5s 4.5s forwards; min-width: 230px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  }
+  .notif { background: rgba(20,15,10,0.95); border-right: 4px solid #f1c40f; padding: 10px 15px; border-radius: 6px; font-size: 13px; color: #fff; animation: slideIn 0.3s, fadeOut 0.5s 4.5s forwards; min-width: 230px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
   .notif.good { border-color: #2ecc71; }
   .notif.bad { border-color: #e74c3c; }
   .notif.info { border-color: #3498db; }
@@ -176,215 +104,143 @@
   @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
   @keyframes fadeOut { to { opacity: 0; transform: translateX(120%); } }
 
-  #controls {
-    position: absolute; bottom: 10px; right: 10px;
-    background: rgba(0,0,0,0.72); padding: 8px 12px; border-radius: 8px;
-    font-size: 11px; color: #aaa; line-height: 1.7; text-align: right;
-  }
-  #controls kbd {
-    background: #333; border: 1px solid #555; border-radius: 3px;
-    padding: 1px 6px; color: #f1c40f; font-family: monospace;
-  }
+  #controls { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.72); padding: 8px 12px; border-radius: 8px; font-size: 11px; color: #aaa; line-height: 1.7; text-align: right; }
+  #controls kbd { background: #333; border: 1px solid #555; border-radius: 3px; padding: 1px 6px; color: #f1c40f; font-family: monospace; }
 
-  #interactHint {
-    position: absolute; bottom: 130px; left: 50%; transform: translateX(-50%);
-    background: rgba(201,169,97,0.95); color: #000; padding: 8px 18px;
-    border-radius: 20px; font-size: 14px; font-weight: bold; display: none;
-    animation: pulse 1.5s infinite; z-index: 40;
-  }
+  #interactHint { position: absolute; bottom: 130px; left: 50%; transform: translateX(-50%); background: rgba(201,169,97,0.95); color: #000; padding: 8px 18px; border-radius: 20px; font-size: 14px; font-weight: bold; display: none; animation: pulse 1.5s infinite; z-index: 40; }
   @keyframes pulse { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.05); } }
 
-  #mountStatus {
-    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
-    background: rgba(20,15,10,0.92); border: 2px solid #8b6f47;
-    padding: 6px 15px; border-radius: 20px; font-size: 13px; display: none;
-  }
-  #ropeStatus {
-    position: absolute; top: 55px; left: 50%; transform: translateX(-50%);
-    background: rgba(20,15,10,0.92); border: 2px solid #8b6f47;
-    padding: 6px 15px; border-radius: 20px; font-size: 13px; display: none;
-  }
-  #spouseStatus {
-    position: absolute; top: 100px; left: 50%; transform: translateX(-50%);
-    background: rgba(255,23,68,0.85); border: 2px solid #ff69b4;
-    padding: 6px 15px; border-radius: 20px; font-size: 13px; display: none;
-    color: #fff; font-weight: bold;
-  }
+  #mountStatus { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(20,15,10,0.92); border: 2px solid #8b6f47; padding: 6px 15px; border-radius: 20px; font-size: 13px; display: none; }
+  #ropeStatus { position: absolute; top: 55px; left: 50%; transform: translateX(-50%); background: rgba(20,15,10,0.92); border: 2px solid #8b6f47; padding: 6px 15px; border-radius: 20px; font-size: 13px; display: none; }
+  #spouseStatus { position: absolute; top: 100px; left: 50%; transform: translateX(-50%); background: rgba(255,23,68,0.85); border: 2px solid #ff69b4; padding: 6px 15px; border-radius: 20px; font-size: 13px; display: none; color: #fff; font-weight: bold; }
 
   #vignette { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle, transparent 45%, rgba(0,0,0,0.5) 100%); z-index: 10; }
   #dayNightOverlay { position: absolute; inset: 0; pointer-events: none; background: rgba(10,10,40,0); transition: background 0.8s; z-index: 5; mix-blend-mode: multiply; }
   #sunGlow { position: absolute; inset: 0; pointer-events: none; background: transparent; transition: background 0.8s; z-index: 6; mix-blend-mode: screen; }
 
-  #loading {
-    position: absolute; inset: 0; background: #0a0a0f; display: flex;
-    align-items: center; justify-content: center; flex-direction: column;
-    z-index: 500; transition: opacity 0.8s;
-  }
+  #loading { position: absolute; inset: 0; background: #0a0a0f; display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 500; transition: opacity 0.8s; }
   #loading h1 { color: #c9a961; font-size: 42px; margin-bottom: 15px; text-shadow: 0 0 30px rgba(201,169,97,0.5); }
   #loading p { color: #888; font-size: 14px; }
   #loading .bar { width: 300px; height: 6px; background: #222; margin-top: 20px; border-radius: 3px; overflow: hidden; }
   #loading .bar-fill { height: 100%; background: linear-gradient(90deg, #c9a961, #f1c40f); width: 0%; transition: width 0.3s; }
   #loading .save-info { color: #2ecc71; font-size: 12px; margin-top: 15px; }
 
-  #minimap {
-    position: absolute; bottom: 10px; left: 10px;
-    width: 180px; height: 180px; background: rgba(0,0,0,0.7);
-    border: 2px solid #c9a961; border-radius: 50%; overflow: hidden; z-index: 20;
-  }
+  #minimap { position: absolute; bottom: 10px; left: 10px; width: 180px; height: 180px; background: rgba(0,0,0,0.7); border: 2px solid #c9a961; border-radius: 50%; overflow: hidden; z-index: 20; }
   #minimapCanvas { width: 100%; height: 100%; display: block; }
 
-  #quests {
-    position: absolute; top: 240px; left: 10px;
-    background: rgba(0,0,0,0.75); border: 2px solid #9b59b6; border-radius: 10px;
-    padding: 10px; min-width: 220px; max-width: 260px; font-size: 12px; display: none;
-  }
+  #quests { position: absolute; top: 240px; left: 10px; background: rgba(0,0,0,0.75); border: 2px solid #9b59b6; border-radius: 10px; padding: 10px; min-width: 220px; max-width: 260px; font-size: 12px; display: none; }
   #quests h3 { color: #9b59b6; font-size: 13px; margin-bottom: 6px; border-bottom: 1px solid #444; padding-bottom: 4px; }
   .quest-item { color: #ddd; margin: 4px 0; padding-right: 6px; line-height: 1.5; }
   .quest-item.done { color: #2ecc71; text-decoration: line-through; }
   .quest-item.new { color: #f1c40f; animation: questPulse 2s infinite; }
   @keyframes questPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
-  #giftPanel {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    background: rgba(20,15,10,0.98); border: 3px solid #e056fd; border-radius: 15px;
-    padding: 20px; width: 480px; max-width: 92vw; display: none; z-index: 110;
-    box-shadow: 0 0 40px rgba(224,86,253,0.4);
-  }
+  #giftPanel { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(20,15,10,0.98); border: 3px solid #e056fd; border-radius: 15px; padding: 20px; width: 480px; max-width: 92vw; display: none; z-index: 110; box-shadow: 0 0 40px rgba(224,86,253,0.4); }
   #giftPanel h2 { color: #e056fd; margin-bottom: 8px; text-align: center; }
   #giftPanel .subtitle { color: #aaa; font-size: 12px; text-align: center; margin-bottom: 15px; }
 
-  #npcOffer {
-    position: absolute; bottom: 200px; left: 50%; transform: translateX(-50%);
-    background: rgba(20,15,10,0.96); border: 3px solid #f1c40f; border-radius: 15px;
-    padding: 15px 20px; width: 520px; max-width: 92vw; display: none; z-index: 60;
-    box-shadow: 0 0 30px rgba(241,196,15,0.5);
-    animation: offerPop 0.4s;
-  }
-  @keyframes offerPop {
-    from { transform: translateX(-50%) scale(0.7); opacity: 0; }
-    to { transform: translateX(-50%) scale(1); opacity: 1; }
-  }
+  #npcOffer { position: absolute; bottom: 200px; left: 50%; transform: translateX(-50%); background: rgba(20,15,10,0.96); border: 3px solid #f1c40f; border-radius: 15px; padding: 15px 20px; width: 520px; max-width: 92vw; display: none; z-index: 60; box-shadow: 0 0 30px rgba(241,196,15,0.5); animation: offerPop 0.4s; }
+  @keyframes offerPop { from { transform: translateX(-50%) scale(0.7); opacity: 0; } to { transform: translateX(-50%) scale(1); opacity: 1; } }
   #npcOffer .offer-name { color: #f1c40f; font-weight: bold; margin-bottom: 6px; font-size: 15px; }
   #npcOffer .offer-text { color: #eee; font-size: 14px; line-height: 1.7; margin-bottom: 12px; }
   #npcOffer .offer-choices { display: flex; gap: 8px; }
-  #npcOffer .offer-choices button {
-    flex: 1; padding: 10px; border-radius: 8px; border: 2px solid;
-    font-family: inherit; font-size: 13px; font-weight: bold; cursor: pointer;
-    background: transparent; transition: all 0.2s;
-  }
+  #npcOffer .offer-choices button { flex: 1; padding: 10px; border-radius: 8px; border: 2px solid; font-family: inherit; font-size: 13px; font-weight: bold; cursor: pointer; background: transparent; transition: all 0.2s; }
   #npcOffer .accept { border-color: #2ecc71; color: #2ecc71; }
   #npcOffer .accept:hover { background: #2ecc71; color: #000; }
   #npcOffer .reject { border-color: #e74c3c; color: #e74c3c; }
   #npcOffer .reject:hover { background: #e74c3c; color: #000; }
 
-  #pondPanel {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    background: linear-gradient(180deg, #1a3d5c, #0a1a2e);
-    border: 3px solid #4fa3d1; border-radius: 15px;
-    padding: 20px; width: 600px; max-width: 92vw; display: none; z-index: 110;
-    box-shadow: 0 0 40px rgba(79,163,209,0.5);
-  }
+  #pondPanel { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(180deg, #1a3d5c, #0a1a2e); border: 3px solid #4fa3d1; border-radius: 15px; padding: 20px; width: 600px; max-width: 92vw; display: none; z-index: 110; box-shadow: 0 0 40px rgba(79,163,209,0.5); }
   #pondPanel h2 { color: #4fa3d1; margin-bottom: 10px; text-align: center; }
   #pondPanel .subtitle { color: #a8d0e6; font-size: 12px; text-align: center; margin-bottom: 15px; }
   #pondPanel .pond-choices { display: flex; flex-direction: column; gap: 8px; }
-  #pondPanel .pond-choices button {
-    padding: 12px; border-radius: 8px; border: 2px solid #4fa3d1;
-    background: rgba(79,163,209,0.1); color: #fff; font-family: inherit;
-    font-size: 14px; cursor: pointer; transition: all 0.2s; text-align: right;
-  }
+  #pondPanel .pond-choices button { padding: 12px; border-radius: 8px; border: 2px solid #4fa3d1; background: rgba(79,163,209,0.1); color: #fff; font-family: inherit; font-size: 14px; cursor: pointer; transition: all 0.2s; text-align: right; }
   #pondPanel .pond-choices button:hover { background: #4fa3d1; color: #000; }
   #pondPanel .pond-choices button.special { border-color: #ff69b4; }
   #pondPanel .pond-choices button.special:hover { background: #ff69b4; }
 
-  #stealResult {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    background: rgba(20,15,10,0.98); border: 3px solid #f1c40f; border-radius: 15px;
-    padding: 25px; width: 500px; max-width: 92vw; display: none; z-index: 120;
-    box-shadow: 0 0 50px rgba(241,196,15,0.5); text-align: center;
-  }
+  #stealResult { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(20,15,10,0.98); border: 3px solid #f1c40f; border-radius: 15px; padding: 25px; width: 500px; max-width: 92vw; display: none; z-index: 120; box-shadow: 0 0 50px rgba(241,196,15,0.5); text-align: center; }
   #stealResult h2 { color: #f1c40f; margin-bottom: 15px; font-size: 22px; }
   #stealResult .result-icon { font-size: 64px; margin: 15px 0; }
   #stealResult .result-text { color: #eee; font-size: 14px; line-height: 1.7; margin-bottom: 15px; }
   #stealResult .progress-roll { height: 6px; background: #222; border-radius: 3px; overflow: hidden; margin: 15px 0; }
   #stealResult .progress-fill { height: 100%; background: linear-gradient(90deg, #e74c3c, #f1c40f); width: 0%; transition: width 0.8s; }
-  #stealResult button {
-    padding: 10px 30px; border-radius: 8px; border: 2px solid #c9a961;
-    background: #2a1f10; color: #c9a961; font-family: inherit;
-    font-size: 14px; cursor: pointer; font-weight: bold;
-  }
+  #stealResult button { padding: 10px 30px; border-radius: 8px; border: 2px solid #c9a961; background: #2a1f10; color: #c9a961; font-family: inherit; font-size: 14px; cursor: pointer; font-weight: bold; }
   #stealResult button:hover { background: #c9a961; color: #000; }
 
-  /* Marriage / Wedding panel */
-  #weddingPanel {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    background: linear-gradient(180deg, #4a0e1a, #1a0508);
-    border: 4px solid #ff69b4; border-radius: 20px;
-    padding: 30px; width: 700px; max-width: 94vw; display: none; z-index: 130;
-    box-shadow: 0 0 80px rgba(255,105,180,0.7); text-align: center;
-  }
+  #weddingPanel { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(180deg, #4a0e1a, #1a0508); border: 4px solid #ff69b4; border-radius: 20px; padding: 30px; width: 700px; max-width: 94vw; display: none; z-index: 130; box-shadow: 0 0 80px rgba(255,105,180,0.7); text-align: center; }
   #weddingPanel h2 { color: #ff69b4; font-size: 32px; margin-bottom: 15px; text-shadow: 0 0 20px #ff69b4; }
   #weddingPanel .wedding-text { color: #fff; font-size: 15px; line-height: 1.9; margin-bottom: 20px; }
   #weddingPanel .wedding-heart { font-size: 80px; margin: 15px 0; animation: heartbeat 1s infinite; }
   @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
   #weddingPanel .wedding-choices { display: flex; flex-direction: column; gap: 10px; }
-  #weddingPanel .wedding-choices button {
-    padding: 14px; border-radius: 10px; border: 3px solid; background: transparent;
-    font-family: inherit; font-size: 15px; font-weight: bold; cursor: pointer; transition: all 0.2s;
-  }
+  #weddingPanel .wedding-choices button { padding: 14px; border-radius: 10px; border: 3px solid; background: transparent; font-family: inherit; font-size: 15px; font-weight: bold; cursor: pointer; transition: all 0.2s; }
   #weddingPanel .yes-btn { border-color: #ff69b4; color: #ff69b4; }
   #weddingPanel .yes-btn:hover { background: #ff69b4; color: #fff; }
   #weddingPanel .no-btn { border-color: #888; color: #888; }
   #weddingPanel .no-btn:hover { background: #888; color: #fff; }
 
-  /* Spouse command panel */
-  #spouseCommand {
-    position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-    background: rgba(20,15,10,0.97); border: 3px solid #ff69b4; border-radius: 15px;
-    padding: 15px 20px; width: 620px; max-width: 92vw; display: none; z-index: 55;
-    box-shadow: 0 0 40px rgba(255,105,180,0.5);
-  }
+  #spouseCommand { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(20,15,10,0.97); border: 3px solid #ff69b4; border-radius: 15px; padding: 15px 20px; width: 620px; max-width: 92vw; display: none; z-index: 55; box-shadow: 0 0 40px rgba(255,105,180,0.5); }
   #spouseCommand .cmd-title { color: #ff69b4; font-weight: bold; margin-bottom: 10px; font-size: 15px; }
-  #spouseCommand .cmd-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
-  }
-  #spouseCommand .cmd-grid button {
-    padding: 10px; border-radius: 8px; border: 2px solid #ff69b4;
-    background: transparent; color: #fff; font-family: inherit;
-    font-size: 12px; cursor: pointer; transition: all 0.2s;
-  }
+  #spouseCommand .cmd-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  #spouseCommand .cmd-grid button { padding: 10px; border-radius: 8px; border: 2px solid #ff69b4; background: transparent; color: #fff; font-family: inherit; font-size: 12px; cursor: pointer; transition: all 0.2s; }
   #spouseCommand .cmd-grid button:hover { background: #ff69b4; color: #000; }
-  #spouseCommand .close-btn {
-    margin-top: 10px; width: 100%; padding: 8px; border-radius: 8px;
-    border: 2px solid #888; background: transparent; color: #888;
-    font-family: inherit; font-size: 13px; cursor: pointer;
-  }
+  #spouseCommand .close-btn { margin-top: 10px; width: 100%; padding: 8px; border-radius: 8px; border: 2px solid #888; background: transparent; color: #888; font-family: inherit; font-size: 13px; cursor: pointer; }
   #spouseCommand .close-btn:hover { background: #888; color: #fff; }
 
-  /* Rope indicator */
-  #ropeHint {
-    position: absolute; bottom: 190px; left: 50%; transform: translateX(-50%);
-    background: rgba(139,111,71,0.95); color: #fff; padding: 6px 14px;
-    border-radius: 16px; font-size: 12px; font-weight: bold; display: none;
-    z-index: 41;
-  }
+  #ropeHint { position: absolute; bottom: 190px; left: 50%; transform: translateX(-50%); background: rgba(139,111,71,0.95); color: #fff; padding: 6px 14px; border-radius: 16px; font-size: 12px; font-weight: bold; display: none; z-index: 41; }
 
-  /* Work quests */
-  #workPanel {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    background: rgba(20,15,10,0.98); border: 3px solid #9b59b6; border-radius: 15px;
-    padding: 25px; width: 600px; max-width: 92vw; display: none; z-index: 115;
-    box-shadow: 0 0 40px rgba(155,89,182,0.5);
-  }
+  #workPanel { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(20,15,10,0.98); border: 3px solid #9b59b6; border-radius: 15px; padding: 25px; width: 600px; max-width: 92vw; display: none; z-index: 115; box-shadow: 0 0 40px rgba(155,89,182,0.5); }
   #workPanel h2 { color: #9b59b6; margin-bottom: 15px; text-align: center; border-bottom: 1px solid #444; padding-bottom: 10px; }
   #workPanel .work-desc { color: #ddd; font-size: 14px; line-height: 1.8; margin-bottom: 15px; }
   #workPanel .work-reward { color: #f1c40f; font-size: 13px; margin-bottom: 15px; text-align: center; }
   #workPanel .work-choices { display: flex; flex-direction: column; gap: 8px; }
-  #workPanel .work-choices button {
-    padding: 10px; border-radius: 8px; border: 2px solid #9b59b6;
-    background: transparent; color: #fff; font-family: inherit;
-    font-size: 13px; cursor: pointer; transition: all 0.2s; text-align: right;
-  }
+  #workPanel .work-choices button { padding: 10px; border-radius: 8px; border: 2px solid #9b59b6; background: transparent; color: #fff; font-family: inherit; font-size: 13px; cursor: pointer; transition: all 0.2s; text-align: right; }
   #workPanel .work-choices button:hover { background: #9b59b6; color: #000; }
+
+  /* ============ MULTIPLAYER UI ============ */
+  #mpMenu { position: absolute; inset: 0; background: rgba(0,0,0,0.94); display: flex; align-items: center; justify-content: center; z-index: 450; }
+  #mpMenu .box { background: linear-gradient(180deg, #2a1f10, #1a1208); border: 3px solid #c9a961; border-radius: 15px; padding: 30px; width: 520px; max-width: 92vw; text-align: center; box-shadow: 0 0 60px rgba(201,169,97,0.4); }
+  #mpMenu h2 { color: #f1c40f; margin-bottom: 20px; }
+  #mpMenu button { width: 100%; padding: 14px; margin: 8px 0; border-radius: 10px; border: 2px solid #c9a961; background: transparent; color: #fff; font-family: inherit; font-size: 15px; cursor: pointer; transition: all 0.2s; }
+  #mpMenu button:hover { background: #c9a961; color: #000; }
+  #mpMenu .peer-id { background: #111; padding: 12px; border-radius: 8px; margin: 15px 0; font-family: monospace; color: #2ecc71; word-break: break-all; border: 1px solid #2ecc71; font-size: 12px; }
+  #mpMenu .status { color: #aaa; font-size: 13px; margin: 15px 0; min-height: 20px; }
+  #mpMenu .input-row { display: flex; gap: 8px; margin: 15px 0; }
+  #mpMenu input { flex: 1; padding: 12px; border-radius: 8px; background: #111; border: 2px solid #555; color: #fff; font-family: inherit; font-size: 13px; }
+
+  #friendStatus { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(46, 204, 113, 0.95); color: #000; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: bold; z-index: 90; display: none; }
+  #friendStatus.offline { background: rgba(231, 76, 60, 0.9); color: #fff; }
+  #friendStatus.waiting { background: rgba(241, 196, 15, 0.9); }
+
+  /* چت کشویی */
+  #chatWrapper { position: absolute; bottom: 10px; left: 200px; z-index: 80; width: 320px; }
+  #chatHeader { background: rgba(0,0,0,0.85); border: 2px solid #c9a961; border-radius: 10px; padding: 8px 14px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 13px; user-select: none; transition: all 0.2s; }
+  #chatHeader:hover { background: rgba(201,169,97,0.2); }
+  #chatHeader .title { color: #c9a961; font-weight: bold; }
+  #chatHeader .arrow { color: #c9a961; transition: transform 0.3s; display: inline-block; }
+  #chatHeader.open .arrow { transform: rotate(180deg); }
+  #chatHeader .unread { background: #e74c3c; color: #fff; border-radius: 10px; padding: 1px 8px; font-size: 11px; font-weight: bold; display: none; }
+  #chatPanel { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; background: rgba(0,0,0,0.85); border: 2px solid #c9a961; border-top: none; border-radius: 0 0 10px 10px; }
+  #chatPanel.open { max-height: 320px; }
+  #chatMessages { height: 200px; overflow-y: auto; padding: 10px; font-size: 12px; line-height: 1.6; color: #eee; }
+  #chatMessages::-webkit-scrollbar { width: 5px; }
+  #chatMessages::-webkit-scrollbar-thumb { background: #c9a961; border-radius: 3px; }
+  #chatMessages .msg { margin-bottom: 6px; padding: 4px 8px; border-radius: 6px; word-wrap: break-word; }
+  #chatMessages .msg.me { background: rgba(46, 204, 113, 0.15); text-align: left; }
+  #chatMessages .msg.them { background: rgba(52, 152, 219, 0.15); }
+  #chatMessages .msg .who { font-weight: bold; margin-left: 4px; }
+  #chatMessages .msg.me .who { color: #2ecc71; }
+  #chatMessages .msg.them .who { color: #3498db; }
+  #chatMessages .system-msg { color: #888; font-style: italic; text-align: center; font-size: 11px; padding: 4px; }
+  #chatInputRow { display: flex; gap: 6px; padding: 8px; border-top: 1px solid #444; }
+  #chatInput { flex: 1; padding: 8px 10px; border-radius: 6px; background: #111; border: 1px solid #555; color: #fff; font-family: inherit; font-size: 12px; outline: none; }
+  #chatInput:focus { border-color: #c9a961; }
+  #chatSendBtn { background: #c9a961; color: #000; border: none; padding: 8px 14px; border-radius: 6px; font-family: inherit; font-size: 12px; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+  #chatSendBtn:hover { background: #f1c40f; }
+
+  /* Friend name tag on player */
+  .friend-bubble { position: absolute; pointer-events: none; z-index: 15; }
 </style>
 </head>
 <body>
@@ -396,7 +252,27 @@
   <div class="save-info" id="saveInfo"></div>
 </div>
 
-<div id="game">
+<div id="mpMenu">
+  <div class="box">
+    <h2>🎮 بازی دو نفره</h2>
+    <div class="status" id="mpStatus">در حال آماده‌سازی...</div>
+    <button id="btnHost">🏠 ساخت بازی (میزبان)</button>
+    <div id="hostBox" style="display:none;">
+      <div style="color:#aaa;font-size:12px;margin-top:10px;">این لینک رو برای رفیقت بفرست:</div>
+      <div class="peer-id" id="myLinkBox">...</div>
+      <button id="btnCopy" style="padding:8px;font-size:12px;margin-top:5px;">📋 کپی لینک</button>
+    </div>
+    <div style="color:#666;margin:15px 0;font-size:12px;">— یا —</div>
+    <button id="btnJoin">🚪 پیوستن به بازی</button>
+    <div class="input-row" id="joinBox" style="display:none;">
+      <input id="friendIdInput" placeholder="کد بازی رفیقت رو بذار..." />
+      <button id="btnConnect" style="width:auto;padding:12px 20px;margin:0;">اتصال</button>
+    </div>
+    <button id="btnSolo" style="border-color:#666;color:#aaa;">👤 بازی تک‌نفره</button>
+  </div>
+</div>
+
+<div id="game" style="display:none;">
   <canvas id="canvas"></canvas>
   <div id="dayNightOverlay"></div>
   <div id="sunGlow"></div>
@@ -411,6 +287,7 @@
   </div>
 
   <div id="saveIndicator">💾 ذخیره شد</div>
+  <div id="friendStatus"></div>
 
   <div id="hud">
     <div class="stat"><span>❤️ جان</span><div class="bar"><div class="bar-fill hp" id="hpBar" style="width:100%"></div></div></div>
@@ -506,15 +383,33 @@
     <div class="offer-choices" id="offerChoices"></div>
   </div>
 
+  <div id="chatWrapper">
+    <div id="chatHeader" onclick="toggleChat()">
+      <span class="title">💬 چت با رفیق</span>
+      <span>
+        <span class="unread" id="chatUnread">0</span>
+        <span class="arrow">▼</span>
+      </span>
+    </div>
+    <div id="chatPanel">
+      <div id="chatMessages"></div>
+      <div id="chatInputRow">
+        <input id="chatInput" placeholder="پیام..." maxlength="120" />
+        <button id="chatSendBtn">ارسال</button>
+      </div>
+    </div>
+  </div>
+
   <div id="notifications"></div>
 
   <div id="controls">
     <kbd>WASD</kbd> حرکت | <kbd>Shift</kbd> دویدن | <kbd>E</kbd> تعامل<br>
     <kbd>Q</kbd> پیاده شو | <kbd>R</kbd> طناب | <kbd>P</kbd> بستن به درخت | <kbd>O</kbd> آزاد<br>
-    <kbd>I</kbd> کوله | <kbd>J</kbd> خاطرات | <kbd>F</kbd> دزدی | <kbd>M</kbd> نقشه
+    <kbd>I</kbd> کوله | <kbd>J</kbd> خاطرات | <kbd>F</kbd> دزدی | <kbd>M</kbd> نقشه | <kbd>C</kbd> همسر
   </div>
 </div>
 
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
 // ================================================================
 // CORE
@@ -531,8 +426,252 @@ window.addEventListener('resize', resize);
 
 const WORLD_SIZE = 4000;
 const GAME_MINUTES_PER_SECOND = 0.35;
-const SAVE_KEY = 'life_rpg_save_v5';
+const SAVE_KEY = 'life_rpg_save_v6';
 const AUTO_SAVE_INTERVAL = 30000;
+
+// ================================================================
+// MULTIPLAYER (PeerJS)
+// ================================================================
+const MP = {
+  peer: null,
+  conn: null,
+  myId: null,
+  isHost: false,
+  connected: false,
+  friend: {
+    x: 2000, y: 2000,
+    targetX: 2000, targetY: 2000,
+    dir: 'down', animFrame: 0,
+    name: 'رفیق',
+    active: false,
+    bubbleMsg: '',
+    bubbleTimer: 0,
+    lastSeen: 0
+  },
+  sendTimer: 0,
+  SEND_INTERVAL: 40,  // ارسال ۲۵ بار در ثانیه
+  lastWorldSync: 0,
+  WORLD_SYNC_INTERVAL: 300,  // سینک NPC/حیوان ۳ بار در ثانیه
+  lastTimeSync: 0,
+  TIME_SYNC_INTERVAL: 3000
+};
+
+function initPeer() {
+  const status = document.getElementById('mpStatus');
+  status.textContent = '🔌 در حال اتصال به سرور signaling...';
+  MP.peer = new Peer();
+
+  MP.peer.on('open', (id) => {
+    MP.myId = id;
+    status.textContent = '✅ آماده!';
+    document.getElementById('myLinkBox').textContent = buildJoinLink(id);
+  });
+
+  MP.peer.on('error', (err) => {
+    console.error('Peer error:', err);
+    status.textContent = '⚠️ خطا: ' + err.type;
+    if (err.type === 'peer-unavailable') notify('کد رفیقت پیدا نشد!', 'bad');
+    if (err.type === 'unavailable-id') {
+      MP.peer.destroy();
+      setTimeout(initPeer, 500);
+    }
+  });
+
+  MP.peer.on('connection', (conn) => {
+    if (MP.conn) { try { conn.close(); } catch(e) {} return; }
+    MP.conn = conn;
+    MP.isHost = true;
+    setupConnection();
+  });
+
+  MP.peer.on('disconnected', () => {
+    if (MP.peer) MP.peer.reconnect();
+  });
+}
+
+function buildJoinLink(id) {
+  const url = new URL(location.href);
+  url.searchParams.set('join', id);
+  return url.toString();
+}
+
+function connectToFriend(friendId) {
+  document.getElementById('mpStatus').textContent = '🔗 در حال اتصال...';
+  if (!MP.peer) initPeer();
+  MP.conn = MP.peer.connect(friendId, { reliable: true });
+  MP.isHost = false;
+  setupConnection();
+}
+
+function setupConnection() {
+  MP.conn.on('open', () => {
+    MP.connected = true;
+    MP.friend.active = true;
+    MP.friend.lastSeen = performance.now();
+    setTimeout(() => {
+      sendToFriend({ type: 'hello', name: 'رفیق' });
+      notify('👥 رفیقت وصل شد!', 'good');
+      updateFriendStatus();
+      addChatSystem('✅ به رفیقت وصل شدی');
+    }, 300);
+  });
+
+  MP.conn.on('data', handleFriendData);
+
+  MP.conn.on('close', () => {
+    MP.connected = false;
+    MP.friend.active = false;
+    notify('👋 اتصال رفیقت قطع شد', 'bad');
+    updateFriendStatus();
+    addChatSystem('❌ اتصال قطع شد');
+  });
+
+  MP.conn.on('error', (e) => console.error('Conn err:', e));
+}
+
+function sendToFriend(data) {
+  if (MP.conn && MP.conn.open) {
+    try { MP.conn.send(data); } catch(e) { console.error('send err', e); }
+  }
+}
+
+function handleFriendData(data) {
+  if (!data || !data.type) return;
+  MP.friend.lastSeen = performance.now();
+
+  switch (data.type) {
+    case 'hello':
+      MP.friend.name = data.name || 'رفیق';
+      updateFriendStatus();
+      break;
+    case 'state':
+      MP.friend.targetX = data.x;
+      MP.friend.targetY = data.y;
+      MP.friend.dir = data.dir || 'down';
+      MP.friend.animFrame = data.animFrame || 0;
+      MP.friend.active = true;
+      break;
+    case 'chat':
+      addChatMsg(data.name || 'رفیق', data.msg, false);
+      MP.friend.bubbleMsg = data.msg;
+      MP.friend.bubbleTimer = 4000;
+      if (!document.getElementById('chatPanel').classList.contains('open')) {
+        chatUnreadCount++;
+        updateChatUnread();
+      }
+      break;
+    case 'time':
+      if (!MP.isHost) {
+        state.day = data.day;
+        state.time = data.time;
+      }
+      break;
+    case 'world':
+      if (!MP.isHost && data.npcs) {
+        for (const sNpc of data.npcs) {
+          const n = state.npcs.find(x => x.name === sNpc.name);
+          if (n) { n.x = sNpc.x; n.y = sNpc.y; n.relation = sNpc.relation; }
+        }
+        for (const sA of data.animals) {
+          const a = state.animals.find(x => x.name === sA.name);
+          if (a) { a.x = sA.x; a.y = sA.y; a.owned = sA.owned; a.forSale = sA.forSale; }
+        }
+      }
+      break;
+    case 'dismount':
+      break;
+  }
+}
+
+function updateFriendStatus() {
+  const el = document.getElementById('friendStatus');
+  if (MP.connected) {
+    el.textContent = `👥 ${MP.friend.name} آنلاین`;
+    el.classList.remove('offline', 'waiting');
+    el.style.display = 'block';
+  } else if (MP.conn) {
+    el.textContent = '⚠️ اتصال قطع شد';
+    el.classList.add('offline');
+    el.style.display = 'block';
+  } else if (MP.peer && MP.myId) {
+    el.textContent = '⏳ منتظر رفیق...';
+    el.classList.add('waiting');
+    el.style.display = 'block';
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+// ================================================================
+// CHAT SYSTEM
+// ================================================================
+let chatUnreadCount = 0;
+
+function toggleChat() {
+  const panel = document.getElementById('chatPanel');
+  const header = document.getElementById('chatHeader');
+  const isOpen = panel.classList.toggle('open');
+  header.classList.toggle('open', isOpen);
+  if (isOpen) {
+    chatUnreadCount = 0;
+    updateChatUnread();
+    setTimeout(() => document.getElementById('chatInput').focus(), 350);
+  }
+}
+
+function updateChatUnread() {
+  const el = document.getElementById('chatUnread');
+  if (chatUnreadCount > 0) {
+    el.textContent = chatUnreadCount > 9 ? '9+' : chatUnreadCount;
+    el.style.display = 'inline-block';
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+function addChatMsg(who, msg, isMe) {
+  const box = document.getElementById('chatMessages');
+  const el = document.createElement('div');
+  el.className = 'msg ' + (isMe ? 'me' : 'them');
+  el.innerHTML = `<span class="who">${escapeHtml(who)}:</span> ${escapeHtml(msg)}`;
+  box.appendChild(el);
+  box.scrollTop = box.scrollHeight;
+  while (box.children.length > 50) box.removeChild(box.firstChild);
+}
+
+function addChatSystem(msg) {
+  const box = document.getElementById('chatMessages');
+  const el = document.createElement('div');
+  el.className = 'system-msg';
+  el.textContent = msg;
+  box.appendChild(el);
+  box.scrollTop = box.scrollHeight;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function sendChatMsg() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  if (!MP.connected) {
+    addChatSystem('⚠️ رفیقت وصل نیست');
+    return;
+  }
+  addChatMsg('من', msg, true);
+  sendToFriend({ type: 'chat', msg, name: 'رفیق' });
+  input.value = '';
+}
+
+document.getElementById('chatSendBtn').addEventListener('click', sendChatMsg);
+document.getElementById('chatInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); sendChatMsg(); }
+  e.stopPropagation();
+});
+document.getElementById('chatInput').addEventListener('keyup', (e) => e.stopPropagation());
+document.getElementById('chatInput').addEventListener('keypress', (e) => e.stopPropagation());
 
 // ================================================================
 // ITEMS DB
@@ -573,9 +712,8 @@ const defaultState = () => ({
   player: {
     x: 2000, y: 2000, speed: 2.4, dir: 'down',
     animFrame: 0, animTimer: 0,
-    mount: null, mountedOnId: null, hidden: false, bob: 0,
-    leadingAnimalId: null,  // حیوانی که با طناب می‌بریم
-    animalTiedToTree: null  // حیوانی که به درخت بسته شده
+    mount: null, mountedOn: null, bob: 0,
+    leadingAnimalId: null
   },
   hp: 100, energy: 100, hunger: 100, thirst: 100,
   friendship: 0, coins: 120, reputation: 0,
@@ -601,19 +739,15 @@ const defaultState = () => ({
   },
   playTimeSeconds: 0,
   createdAt: Date.now(),
-  spouse: null,  // نام همسر
-  spouseState: 'idle',  // idle, following, going_home, shopping, resting, hugging
-  spouseTarget: null,   // هدف فعلی
-  usedQuestIds: [],     // مأموریت‌های انجام‌شده
-  activeJob: null,      // کار فعلی
+  spouse: null,
+  spouseState: 'idle',
+  usedQuestIds: [],
+  activeJob: null,
   questCounter: 0
 });
 
 let state = defaultState();
 
-// ================================================================
-// INVENTORY INITIAL
-// ================================================================
 function initInventory() {
   state.inventory[0] = { id: 'bread', name: 'نان', icon: '🍞', count: 3, effect: 'hunger', value: 30 };
   state.inventory[1] = { id: 'water', name: 'آب', icon: '💧', count: 2, effect: 'thirst', value: 40 };
@@ -624,15 +758,8 @@ function initInventory() {
   state.inventory[6] = { id: 'rope', name: 'طناب', icon: '🪢', count: 1, effect: 'rope', value: 0 };
 }
 
-// ================================================================
-// JOURNAL
-// ================================================================
 function addJournalEntry(type, text, icon = '📝') {
-  state.journal.unshift({
-    type, text, icon,
-    day: state.day, time: formatTime(state.time),
-    timestamp: Date.now()
-  });
+  state.journal.unshift({ type, text, icon, day: state.day, time: formatTime(state.time), timestamp: Date.now() });
   if (state.journal.length > 500) state.journal = state.journal.slice(0, 500);
 }
 
@@ -668,33 +795,31 @@ function renderJournal(tab = 'all') {
     }
   }
 
-  if (tab === 'stats' || tab === 'all') {
-    if (tab === 'stats') {
-      html += '<h3 style="color:#f1c40f;margin-bottom:12px">📊 آمار بازی</h3>';
-      const s = state.stats;
-      const playHours = Math.floor(state.playTimeSeconds / 3600);
-      const playMins = Math.floor((state.playTimeSeconds % 3600) / 60);
-      html += `
-        <div class="journal-entry">
-          <div>⏱️ زمان بازی: ${playHours} ساعت و ${playMins} دقیقه</div>
-          <div>📅 روز بازی: ${state.day}</div>
-          <div>💰 سکه‌های فعلی: ${Math.floor(state.coins)}</div>
-          <div>🏆 اعتبار: ${state.reputation}</div>
-          ${state.spouse ? `<div>💍 همسر: ${state.spouse}</div>` : ''}
-          <div>📈 کل درآمد: ${s.totalMoneyEarned} سکه</div>
-          <div>📉 کل هزینه: ${s.totalMoneySpent} سکه</div>
-          <div>🎁 هدایای داده‌شده: ${s.totalGiftsGiven}</div>
-          <div>🎁 هدایای گرفته‌شده: ${s.totalGiftsReceived}</div>
-          <div>🔓 دزدی موفق: ${s.totalStealsSucceeded}</div>
-          <div>🚨 دزدی ناموفق: ${s.totalStealsFailed}</div>
-          <div>💧 دفعات رفتن کنار حوضچه: ${s.totalPondVisits}</div>
-          <div>💛 دوستی‌های شکل‌گرفته: ${s.friendshipStarted}</div>
-          <div>🎯 مأموریت‌های کامل‌شده: ${s.questsCompleted}</div>
-          <div>💼 کارهای انجام‌شده: ${s.jobsCompleted}</div>
-          <div>🐎 حیوانات رام‌شده: ${s.animalsTamed}</div>
-        </div>
-      `;
-    }
+  if (tab === 'stats') {
+    html += '<h3 style="color:#f1c40f;margin-bottom:12px">📊 آمار بازی</h3>';
+    const s = state.stats;
+    const playHours = Math.floor(state.playTimeSeconds / 3600);
+    const playMins = Math.floor((state.playTimeSeconds % 3600) / 60);
+    html += `
+      <div class="journal-entry">
+        <div>⏱️ زمان بازی: ${playHours} ساعت و ${playMins} دقیقه</div>
+        <div>📅 روز بازی: ${state.day}</div>
+        <div>💰 سکه‌های فعلی: ${Math.floor(state.coins)}</div>
+        <div>🏆 اعتبار: ${state.reputation}</div>
+        ${state.spouse ? `<div>💍 همسر: ${state.spouse}</div>` : ''}
+        <div>📈 کل درآمد: ${s.totalMoneyEarned} سکه</div>
+        <div>📉 کل هزینه: ${s.totalMoneySpent} سکه</div>
+        <div>🎁 هدایای داده‌شده: ${s.totalGiftsGiven}</div>
+        <div>🎁 هدایای گرفته‌شده: ${s.totalGiftsReceived}</div>
+        <div>🔓 دزدی موفق: ${s.totalStealsSucceeded}</div>
+        <div>🚨 دزدی ناموفق: ${s.totalStealsFailed}</div>
+        <div>💧 دفعات رفتن کنار حوضچه: ${s.totalPondVisits}</div>
+        <div>💛 دوستی‌های شکل‌گرفته: ${s.friendshipStarted}</div>
+        <div>🎯 مأموریت‌های کامل‌شده: ${s.questsCompleted}</div>
+        <div>💼 کارهای انجام‌شده: ${s.jobsCompleted}</div>
+        <div>🐎 حیوانات رام‌شده: ${s.animalsTamed}</div>
+      </div>
+    `;
   }
 
   if (tab === 'quest') {
@@ -704,14 +829,16 @@ function renderJournal(tab = 'all') {
     else for (const e of doneQuests) html += `<div class="journal-entry quest"><div class="time">📅 روز ${e.day} - ${e.time}</div><div>${e.icon} ${e.text}</div></div>`;
   }
 
-  if (tab !== 'stats' && tab !== 'friends' && tab !== 'quest') {
+  if (tab === 'all' || (tab !== 'stats' && tab !== 'friends' && tab !== 'quest')) {
     let entries = state.journal;
     if (tab === 'gifts') entries = state.journal.filter(e => e.type === 'gift');
     else if (tab === 'steal') entries = state.journal.filter(e => e.type === 'steal');
     else if (tab === 'pond') entries = state.journal.filter(e => e.type === 'pond');
     else if (tab === 'money') entries = state.journal.filter(e => e.type === 'money');
-    if (entries.length === 0) html += '<div class="journal-empty">هنوز خاطره‌ای اینجا ثبت نشده...</div>';
-    else for (const e of entries) html += `<div class="journal-entry ${e.type}"><div class="time">📅 روز ${e.day} - ساعت ${e.time}</div><div>${e.icon} ${e.text}</div></div>`;
+    if (tab !== 'all') {
+      if (entries.length === 0) html += '<div class="journal-empty">هنوز خاطره‌ای اینجا ثبت نشده...</div>';
+      else for (const e of entries) html += `<div class="journal-entry ${e.type}"><div class="time">📅 روز ${e.day} - ساعت ${e.time}</div><div>${e.icon} ${e.text}</div></div>`;
+    }
   }
 
   content.innerHTML = html;
@@ -733,7 +860,7 @@ function getRelationshipStatus(n) {
 function saveGame(silent = false) {
   try {
     const toSave = {
-      version: 5, savedAt: Date.now(),
+      version: 6, savedAt: Date.now(),
       hp: state.hp, energy: state.energy, hunger: state.hunger, thirst: state.thirst,
       friendship: state.friendship, coins: state.coins, reputation: state.reputation,
       day: state.day, time: state.time, inventory: state.inventory,
@@ -773,7 +900,7 @@ function loadGame() {
     const saved = localStorage.getItem(SAVE_KEY);
     if (!saved) return false;
     const data = JSON.parse(saved);
-    if (!data || data.version !== 5) return false;
+    if (!data || (data.version !== 6 && data.version !== 5)) return false;
     state.hp = data.hp ?? 100; state.energy = data.energy ?? 100;
     state.hunger = data.hunger ?? 100; state.thirst = data.thirst ?? 100;
     state.friendship = data.friendship ?? 0; state.coins = data.coins ?? 120;
@@ -816,7 +943,7 @@ function loadGame() {
         }
       }
     }
-    if (data.player.mount && data.player.mountedOnId) {
+    if (data.player && data.player.mount && data.player.mountedOnId) {
       const m = state.animals.find(a => a.name === data.player.mountedOnId);
       if (m && m.owned) {
         state.player.mount = data.player.mount;
@@ -942,7 +1069,7 @@ function makeNPC(opts) {
 }
 
 // ================================================================
-// QUEST SYSTEM (دینامیک)
+// QUEST SYSTEM
 // ================================================================
 const QUEST_TEMPLATES = [
   { id: 'meet3', title: 'با ۳ نفر جدید آشنا شو', type: 'meet', target: 3, reward: 30 },
@@ -968,13 +1095,7 @@ function addQuest(templateId) {
   const t = QUEST_TEMPLATES.find(q => q.id === templateId);
   if (!t) return false;
   state.usedQuestIds.push(templateId);
-  state.quests.push({
-    ...t,
-    progress: t.type === 'earn' ? Math.floor(state.coins) : 0,
-    done: false,
-    isNew: true,
-    active: true
-  });
+  state.quests.push({ ...t, progress: t.type === 'earn' ? Math.floor(state.coins) : 0, done: false, isNew: true, active: true });
   setTimeout(() => { const q = state.quests.find(x => x.id === t.id); if (q) q.isNew = false; }, 5000);
   notify(`🎯 مأموریت جدید: ${t.title}`, 'quest');
   renderQuests();
@@ -1006,7 +1127,6 @@ function updateQuestProgressByType(type, amount = 1, absoluteValue = null) {
       notify(`🏆 مأموریت «${q.title}» کامل شد! (+${q.reward} سکه، +۱۰ اعتبار)`, 'good');
       addJournalEntry('quest', `مأموریت «${q.title}» رو کامل کردم و ${q.reward} سکه و ۱۰ اعتبار گرفتم.`, '🏆');
       updated = true;
-      // بعد از ۲ ثانیه یه مأموریت جدید بده
       setTimeout(() => {
         const success = tryGenerateNewQuest();
         if (success) notify('✨ مأموریت جدید اضافه شد!', 'quest');
@@ -1016,32 +1136,14 @@ function updateQuestProgressByType(type, amount = 1, absoluteValue = null) {
   if (updated) { renderQuests(); saveGame(true); }
 }
 
-function updateQuestProgress(id, amount = 1) {
-  const q = state.quests.find(q => q.id === id);
-  if (!q || q.done) return;
-  q.progress += amount;
-  if (q.progress >= q.target) {
-    q.done = true;
-    state.coins += q.reward;
-    state.reputation += 10;
-    state.stats.totalMoneyEarned += q.reward;
-    state.stats.questsCompleted++;
-    notify(`🏆 مأموریت کامل شد: ${q.title} (+${q.reward} سکه)`, 'good');
-    addJournalEntry('quest', `مأموریت «${q.title}» رو کامل کردم.`, '🏆');
-    setTimeout(() => { if (tryGenerateNewQuest()) notify('✨ مأموریت جدید اضافه شد!', 'quest'); }, 2000);
-  }
-  renderQuests();
-}
-
 function renderQuests() {
   const list = document.getElementById('questList');
   list.innerHTML = '';
   const active = state.quests.filter(q => !q.done);
   const recentDone = state.quests.filter(q => q.done).slice(-2);
   const all = [...active, ...recentDone];
-  if (all.length === 0) {
-    list.innerHTML = '<div style="color:#666;font-size:11px">همه مأموریت‌ها انجام شده</div>';
-  } else {
+  if (all.length === 0) list.innerHTML = '<div style="color:#666;font-size:11px">همه مأموریت‌ها انجام شده</div>';
+  else {
     all.forEach(q => {
       const el = document.createElement('div');
       el.className = 'quest-item' + (q.done ? ' done' : '') + (q.isNew ? ' new' : '');
@@ -1053,7 +1155,7 @@ function renderQuests() {
 }
 
 // ================================================================
-// WORK SYSTEM (کار برای مردم)
+// WORK SYSTEM
 // ================================================================
 const JOBS = {
   farmer: { title: '🧑‍🌾 کمک به کشاورز', desc: 'کشاورز ازت خواسته تا گندم‌ها رو درو کنی و کاه‌ها رو جمع کنی.', reward: 25, time: 5, rep: 5 },
@@ -1092,25 +1194,14 @@ function closeWorkPanel() {
 function startJob(npc, job) {
   closeWorkPanel();
   if (state.energy < 20) { notify('انرژی کافی نداری برای کار!', 'bad'); return; }
-  state.activeJob = {
-    npcName: npc.name, jobType: npc.dialog,
-    started: state.time, duration: job.time / 60, // به دقیقه‌ی بازی
-    reward: job.reward, rep: job.rep
-  };
+  state.activeJob = { npcName: npc.name, jobType: npc.dialog, reward: job.reward, rep: job.rep };
   notify(`🔨 شروع به کار کردی...`, 'info');
   addJournalEntry('money', `شروع به کار برای ${npc.name} کردم.`, '🔨');
-  // شبیه‌سازی کار با پیشرفت
-  let progress = 0;
   const workInterval = setInterval(() => {
-    progress += 10;
-    if (progress > 100) progress = 100;
-    if (progress >= 100) {
-      clearInterval(workInterval);
-      completeJob();
-    }
-  }, job.time * 100);
-  // ذخیره‌ی interval id
-  state.activeJob._interval = workInterval;
+    if (!state.activeJob) { clearInterval(workInterval); return; }
+    completeJob();
+    clearInterval(workInterval);
+  }, job.time * 1000);
 }
 
 function completeJob() {
@@ -1147,8 +1238,7 @@ function proposeMarriage(npc) {
   const check = canMarry(npc);
   if (!check.ok) { notify(check.reason, 'bad'); return; }
   state.weddingOpen = true;
-  document.getElementById('weddingText').textContent = 
-    `${npc.name} با چشمانی پر از اشک شوق به تو نگاه می‌کنه...\n\n«آیا حاضری تا آخر عمر کنارم بمونی؟»`;
+  document.getElementById('weddingText').textContent = `${npc.name} با چشمانی پر از اشک شوق به تو نگاه می‌کنه...\n\n«آیا حاضری تا آخر عمر کنارم بمونی؟»`;
   const choices = document.getElementById('weddingChoices');
   choices.innerHTML = '';
   const yesBtn = document.createElement('button');
@@ -1164,7 +1254,6 @@ function proposeMarriage(npc) {
 }
 
 function finalizeMarriage(npc) {
-  // حذف حلقه
   const ringIdx = state.inventory.findIndex(it => it && it.id === 'ring_gold');
   if (ringIdx >= 0) {
     state.inventory[ringIdx].count--;
@@ -1176,15 +1265,10 @@ function finalizeMarriage(npc) {
   state.reputation += 50;
   state.coins -= 300;
   state.stats.totalMoneySpent += 300;
-  
-  // مراسم
   state.weddingOpen = false;
   document.getElementById('weddingPanel').style.display = 'none';
-  
   notify(`💍 ازدواج کردی! ${npc.name} حالا همسرته!`, 'marry');
   addJournalEntry('marriage', `با ${npc.name} ازدواج کردم! روز خوبی بود.`, '💍');
-  
-  // افکت بزرگ جشن
   for (let i = 0; i < 100; i++) {
     const a = Math.random() * Math.PI * 2;
     const sp = 2 + Math.random() * 5;
@@ -1196,12 +1280,9 @@ function finalizeMarriage(npc) {
       life: 80, maxLife: 80
     });
   }
-  
   npc.emotion.icon = '💍';
   npc.emotion.timer = 8000;
-  
   updateSpouseStatus();
-  updateQuestProgressByType('quest_marriage', 1);
   saveGame(true);
 }
 
@@ -1214,39 +1295,27 @@ function updateSpouseStatus() {
 }
 
 function getSpouseStateLabel() {
-  const states = {
-    idle: 'آزاد',
-    following: 'دنبالت',
-    going_home: 'رفتن به خونه',
-    shopping: 'خرید کردن',
-    resting: 'استراحت',
-    hugging: 'بغل کردن'
-  };
+  const states = { idle: 'آزاد', following: 'دنبالت', going_home: 'رفتن به خونه', shopping: 'خرید کردن', resting: 'استراحت', hugging: 'بغل کردن' };
   return states[state.spouseState] || 'آزاد';
 }
 
-// ================================================================
-// SPOUSE COMMAND SYSTEM
-// ================================================================
 function openSpouseCommand() {
   if (!state.spouse) return;
   state.spouseCommandOpen = true;
   document.getElementById('cmdTitle').textContent = `💕 فرمان به ${state.spouse}`;
   const grid = document.getElementById('cmdGrid');
   grid.innerHTML = '';
-  
   const commands = [
-    { label: '🚶 دنبالم بیا', cmd: 'follow', icon: '🚶' },
-    { label: '🏠 برو خونه', cmd: 'go_home', icon: '🏠' },
-    { label: '🛒 برو خرید', cmd: 'shop', icon: '🛒' },
-    { label: '🛏️ برو استراحت', cmd: 'rest', icon: '🛏️' },
-    { label: '🤗 منو بغل کن', cmd: 'hug', icon: '🤗' },
-    { label: '💋 بوسم کن', cmd: 'kiss', icon: '💋' },
-    { label: '🍽️ با هم غذا بخوریم', cmd: 'dine', icon: '🍽️' },
-    { label: '💐 برام گل بیار', cmd: 'bring_flower', icon: '💐' },
-    { label: '🏃 بیا اینجا', cmd: 'come_here', icon: '🏃' }
+    { label: '🚶 دنبالم بیا', cmd: 'follow' },
+    { label: '🏠 برو خونه', cmd: 'go_home' },
+    { label: '🛒 برو خرید', cmd: 'shop' },
+    { label: '🛏️ برو استراحت', cmd: 'rest' },
+    { label: '🤗 منو بغل کن', cmd: 'hug' },
+    { label: '💋 بوسم کن', cmd: 'kiss' },
+    { label: '🍽️ با هم غذا بخوریم', cmd: 'dine' },
+    { label: '💐 برام گل بیار', cmd: 'bring_flower' },
+    { label: '🏃 بیا اینجا', cmd: 'come_here' }
   ];
-  
   for (const c of commands) {
     const btn = document.createElement('button');
     btn.textContent = c.label;
@@ -1264,7 +1333,6 @@ function closeSpouseCommand() {
 function executeSpouseCommand(cmd) {
   const spouse = state.npcs.find(n => n.name === state.spouse);
   if (!spouse) { closeSpouseCommand(); return; }
-  
   switch(cmd) {
     case 'follow':
       state.spouseState = 'following';
@@ -1278,7 +1346,6 @@ function executeSpouseCommand(cmd) {
     case 'shop':
       state.spouseState = 'shopping';
       notify(`🛒 ${spouse.name} رفت خرید`, 'info');
-      // بعد از مدتی خرید برگرده با یه هدیه
       setTimeout(() => {
         if (state.spouseState === 'shopping') {
           const gifts = ['apple', 'bread', 'chocolate', 'flower'];
@@ -1305,7 +1372,6 @@ function executeSpouseCommand(cmd) {
       addJournalEntry('love', `${spouse.name} رو بغل کردم. لحظه‌ی قشنگی بود.`, '🤗');
       spawnParticles(state.player.x, state.player.y - 20, '#ff69b4', 25);
       spouse.emotion.icon = '💖'; spouse.emotion.timer = 4000;
-      // اسب/شتر نزدیک بشه
       spouse.x = state.player.x + 30;
       spouse.y = state.player.y;
       setTimeout(() => { if (state.spouseState === 'hugging') state.spouseState = 'following'; }, 3000);
@@ -1320,10 +1386,7 @@ function executeSpouseCommand(cmd) {
       spouse.emotion.icon = '😘'; spouse.emotion.timer = 4000;
       break;
     case 'dine':
-      if (state.hunger < 30) {
-        notify('اول باید غذا بخری!', 'bad');
-        break;
-      }
+      if (state.hunger < 30) { notify('اول باید غذا بخری!', 'bad'); break; }
       state.hunger = Math.min(100, state.hunger + 40);
       state.hp = Math.min(100, state.hp + 20);
       addFriend(spouse, 8);
@@ -1338,9 +1401,7 @@ function executeSpouseCommand(cmd) {
           addJournalEntry('love', `${spouse.name} برام گل آورد.`, '💐');
           spouse.emotion.icon = '🌸'; spouse.emotion.timer = 3000;
         }
-      } else {
-        notify(`${spouse.name} نتونست گل پیدا کنه`, 'info');
-      }
+      } else notify(`${spouse.name} نتونست گل پیدا کنه`, 'info');
       break;
     case 'come_here':
       spouse.x = state.player.x + 30;
@@ -1355,17 +1416,11 @@ function executeSpouseCommand(cmd) {
   saveGame(true);
 }
 
-// ================================================================
-// SPOUSE AI
-// ================================================================
 function updateSpouseAI(dt) {
   if (!state.spouse) return;
   const spouse = state.npcs.find(n => n.name === state.spouse);
   if (!spouse) return;
-
-  // خونه‌ی همسر = خونه‌ی خودت (2500, 2900 حدود)
   const homeX = 2500, homeY = 3050;
-
   if (state.spouseState === 'following') {
     const dx = state.player.x - spouse.x;
     const dy = state.player.y - spouse.y;
@@ -1375,7 +1430,6 @@ function updateSpouseAI(dt) {
       spouse.y += (dy / dist) * 2.2;
       spouse.walking += dt;
     } else if (dist < 35) {
-      // نزدیک تر از حد - عقب‌عقب بره
       spouse.x -= (dx / dist) * 0.5;
       spouse.y -= (dy / dist) * 0.5;
     }
@@ -1383,44 +1437,26 @@ function updateSpouseAI(dt) {
     const dx = homeX - spouse.x;
     const dy = homeY - spouse.y;
     const dist = Math.hypot(dx, dy);
-    if (dist > 15) {
-      spouse.x += (dx / dist) * 2;
-      spouse.y += (dy / dist) * 2;
-      spouse.walking += dt;
-    } else {
-      state.spouseState = 'idle';
-      updateSpouseStatus();
-    }
-  } else if (state.spouseState === 'resting') {
-    // سرگردانی کم
-    spouse.walking = 0;
+    if (dist > 15) { spouse.x += (dx / dist) * 2; spouse.y += (dy / dist) * 2; spouse.walking += dt; }
+    else { state.spouseState = 'idle'; updateSpouseStatus(); }
   } else if (state.spouseState === 'shopping') {
-    // بره سمت فروشگاه
     const shopX = 2000, shopY = 1720;
     const dx = shopX - spouse.x, dy = shopY - spouse.y;
     const dist = Math.hypot(dx, dy);
-    if (dist > 15) {
-      spouse.x += (dx / dist) * 1.8;
-      spouse.y += (dy / dist) * 1.8;
-      spouse.walking += dt;
-    }
+    if (dist > 15) { spouse.x += (dx / dist) * 1.8; spouse.y += (dy / dist) * 1.8; spouse.walking += dt; }
   } else if (state.spouseState === 'hugging') {
-    // نزدیک بازیکن بمونه
     spouse.x += (state.player.x + 30 - spouse.x) * 0.1;
     spouse.y += (state.player.y - spouse.y) * 0.1;
   }
 }
 
 // ================================================================
-// ROPE SYSTEM
+// ROPE
 // ================================================================
 function tryRope() {
   const blocked = state.dialogActive || state.inventoryOpen || state.npcOffer || state.giftPanelOpen || state.journalOpen || state.pondOpen || state.stealResultOpen || state.spouseCommandOpen || state.weddingOpen;
   if (blocked) return;
-  
   const p = state.player;
-  
-  // اگه در حال کشیدن حیوانیم، ولش کن
   if (p.leadingAnimalId) {
     notify(`🪢 ${p.leadingAnimalId} رو ول کردی`, 'info');
     const a = state.animals.find(x => x.name === p.leadingAnimalId);
@@ -1429,22 +1465,15 @@ function tryRope() {
     updateRopeStatus();
     return;
   }
-  
-  // چک کن طناب تو کوله داری
   const hasRope = state.inventory.some(it => it && it.id === 'rope');
   if (!hasRope) { notify('🪢 طناب نداری! از فروشگاه بخر', 'bad'); return; }
-  
-  // نزدیک‌ترین حیوان اهلی
   let closest = null, minDist = 80;
   for (const a of state.animals) {
     if (!a.owned) continue;
     const d = Math.hypot(a.x - p.x, a.y - p.y);
     if (d < minDist) { minDist = d; closest = a; }
   }
-  
   if (!closest) { notify('حیوان اهلی نزدیک نیست', 'bad'); return; }
-  
-  // بستن طناب
   closest.leading = true;
   closest.tiedToTree = false;
   p.leadingAnimalId = closest.name;
@@ -1458,16 +1487,12 @@ function tryRope() {
 function tryTieToTree() {
   const p = state.player;
   if (!p.leadingAnimalId) { notify('اول باید یه حیوان رو با طناب بگیری', 'bad'); return; }
-  
-  // نزدیک‌ترین درخت
   let closest = null, minDist = 100;
   for (const t of state.trees) {
     const d = Math.hypot(t.x - p.x, t.y - p.y);
     if (d < minDist) { minDist = d; closest = t; }
   }
-  
   if (!closest) { notify('درختی نزدیک نیست', 'bad'); return; }
-  
   const a = state.animals.find(x => x.name === p.leadingAnimalId);
   if (a) {
     a.leading = true;
@@ -1486,17 +1511,13 @@ function tryTieToTree() {
 
 function tryFreeFromTree() {
   const p = state.player;
-  
-  // اگه حیوانی به درخت بسته داریم نزدیکمون
   let closest = null, minDist = 100;
   for (const a of state.animals) {
     if (!a.tiedToTree) continue;
     const d = Math.hypot(a.x - p.x, a.y - p.y);
     if (d < minDist) { minDist = d; closest = a; }
   }
-  
   if (!closest) {
-    // اگه حیوان در دست داریم، ولش کنیم
     if (p.leadingAnimalId) {
       const a = state.animals.find(x => x.name === p.leadingAnimalId);
       if (a) a.leading = false;
@@ -1508,7 +1529,6 @@ function tryFreeFromTree() {
     notify('حیوانی که به درخت بسته باشه نزدیک نیست', 'bad');
     return;
   }
-  
   closest.tiedToTree = false;
   closest.leading = false;
   notify(`🪢 ${closest.name} رو آزاد کردی`, 'good');
@@ -1522,19 +1542,18 @@ function updateRopeStatus() {
   if (p.leadingAnimalId) {
     el.textContent = `🪢 داری ${p.leadingAnimalId} رو با طناب می‌بری (R=ول کردن، P=بستن به درخت)`;
     el.style.display = 'block';
-  } else {
-    el.style.display = 'none';
-  }
+  } else el.style.display = 'none';
 }
 
 // ================================================================
 // INPUT
 // ================================================================
 document.addEventListener('keydown', e => {
+  // اگه چت فوکوس داره، کدوم کلیدها رو نگیر
+  if (document.activeElement === document.getElementById('chatInput')) return;
   state.keys[e.key.toLowerCase()] = true;
   const k = e.key.toLowerCase();
   const blocked = state.giftPanelOpen || state.journalOpen || state.pondOpen || state.stealResultOpen || state.weddingOpen || state.spouseCommandOpen || state.workPanelOpen;
-  
   if (k === 'i' && !blocked) toggleInventory();
   if (k === 'j' && !state.giftPanelOpen && !state.inventoryOpen && !state.pondOpen && !state.stealResultOpen && !state.weddingOpen && !state.spouseCommandOpen && !state.workPanelOpen) toggleJournal();
   if (k === 'e') interact();
@@ -1545,7 +1564,11 @@ document.addEventListener('keydown', e => {
   if (k === 'p') tryTieToTree();
   if (k === 'o') tryFreeFromTree();
   if (k === 'c' && state.spouse && !blocked) openSpouseCommand();
-  
+  if (k === 't' && !blocked) {
+    e.preventDefault();
+    if (!document.getElementById('chatPanel').classList.contains('open')) toggleChat();
+    document.getElementById('chatInput').focus();
+  }
   if (e.key === 'Escape') {
     if (state.npcOffer) { rejectOffer(); return; }
     if (state.stealResultOpen) { closeStealResult(); return; }
@@ -1582,17 +1605,14 @@ function updatePlayer(dt) {
   let dx = 0, dy = 0;
   const blocked = state.dialogActive || state.inventoryOpen || state.showBigMap || state.giftPanelOpen || state.npcOffer || state.journalOpen || state.pondOpen || state.stealResultOpen || state.weddingOpen || state.spouseCommandOpen || state.workPanelOpen;
   if (blocked) return;
-
   if (state.keys['w'] || state.keys['arrowup']) dy -= 1;
   if (state.keys['s'] || state.keys['arrowdown']) dy += 1;
   if (state.keys['a'] || state.keys['arrowleft']) dx -= 1;
   if (state.keys['d'] || state.keys['arrowright']) dx += 1;
-
   const running = state.keys['shift'] && !p.mount;
   let spd = p.speed * (running ? 1.8 : 1);
   if (p.mount && p.mountedOn) spd = p.mountedOn.speed;
   if (state.energy < 10) spd *= 0.5;
-
   if (dx !== 0 || dy !== 0) {
     const len = Math.hypot(dx, dy);
     dx /= len; dy /= len;
@@ -1609,11 +1629,7 @@ function updatePlayer(dt) {
   } else { p.animFrame = 0; p.bob = 0; }
   p.x = Math.max(20, Math.min(WORLD_SIZE - 20, p.x));
   p.y = Math.max(20, Math.min(WORLD_SIZE - 20, p.y));
-  
-  // سوارکاری
   if (p.mount && p.mountedOn) { p.mountedOn.x = p.x; p.mountedOn.y = p.y + 22; }
-  
-  // کشیدن با طناب
   if (p.leadingAnimalId) {
     const a = state.animals.find(x => x.name === p.leadingAnimalId);
     if (a && !a.tiedToTree) {
@@ -1626,7 +1642,6 @@ function updatePlayer(dt) {
       }
     }
   }
-  
   state.energy = Math.max(0, state.energy);
   state.hunger = Math.max(0, state.hunger);
   state.thirst = Math.max(0, state.thirst);
@@ -1687,14 +1702,16 @@ function getLighting(hour) {
 }
 
 function updateTime(dt) {
-  state.time += GAME_MINUTES_PER_SECOND * (dt / 1000);
-  state.playTimeSeconds += dt / 1000;
-  if (state.time >= 1440) {
-    state.time -= 1440; state.day++;
-    notify(`🌅 روز ${state.day} شروع شد!`, 'info');
-    addJournalEntry('money', `روز ${state.day} شروع شد.`, '🌅');
-    saveGame(true);
+  if (MP.isHost || !MP.connected) {
+    state.time += GAME_MINUTES_PER_SECOND * (dt / 1000);
+    if (state.time >= 1440) {
+      state.time -= 1440; state.day++;
+      notify(`🌅 روز ${state.day} شروع شد!`, 'info');
+      addJournalEntry('money', `روز ${state.day} شروع شد.`, '🌅');
+      saveGame(true);
+    }
   }
+  state.playTimeSeconds += dt / 1000;
   const hour = state.time / 60;
   const lighting = getLighting(hour);
   document.getElementById('dayNightOverlay').style.background = lighting.overlayColor;
@@ -1702,8 +1719,7 @@ function updateTime(dt) {
   const phase = getTimePhase(hour);
   document.getElementById('phaseIcon').textContent = phase.icon;
   document.getElementById('phaseText').textContent = phase.name;
-  const h = Math.floor(hour);
-  const m = Math.floor(state.time % 60);
+  const h = Math.floor(hour), m = Math.floor(state.time % 60);
   document.getElementById('timeText').textContent = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
   document.getElementById('dayText').textContent = 'روز ' + state.day;
 }
@@ -1712,13 +1728,12 @@ function updateTime(dt) {
 // NPC AI
 // ================================================================
 function updateNPCs(dt) {
+  if (!MP.isHost && MP.connected) return;  // مهمان NPCها رو لوکال آپدیت نمی‌کنه
   const p = state.player;
   const now = state.time;
   state.offerCooldown = Math.max(0, state.offerCooldown - dt);
   for (const n of state.npcs) {
-    // اگه همسرمون باشه، AI جدا
     if (n.name === state.spouse) continue;
-    
     n.wanderTimer -= dt;
     if (n.wanderTimer <= 0) {
       n.wanderTimer = 2500 + Math.random() * 3500;
@@ -1730,7 +1745,6 @@ function updateNPCs(dt) {
     if (d > 4) { n.x += (dx / d) * 0.5; n.y += (dy / d) * 0.5; n.walking += dt; }
     else n.walking = 0;
     if (n.emotion.timer > 0) { n.emotion.timer -= dt; if (n.emotion.timer <= 0) n.emotion.icon = null; }
-    
     const distToPlayer = Math.hypot(p.x - n.x, p.y - n.y);
     if (distToPlayer < 150 && n.relation > 25 && !state.dialogActive && !state.npcOffer && state.offerCooldown <= 0) {
       const sinceLast = now - n.memory.lastOfferTime;
@@ -1850,14 +1864,14 @@ function closeOffer() {
 function rejectOffer() { if (state.npcOffer) state.npcOffer.onReject(); }
 
 // ================================================================
-// ANIMALS (با انیمیشن راه رفتن بهتر)
+// ANIMALS AI
 // ================================================================
 function updateAnimals(dt) {
+  if (!MP.isHost && MP.connected) return;
   for (const a of state.animals) {
     if (state.player.mountedOn === a) continue;
-    if (a.tiedToTree) continue;  // بسته به درخت - ثابت
-    if (state.player.leadingAnimalId === a.name) continue;  // داره کشیده می‌شه
-    
+    if (a.tiedToTree) continue;
+    if (state.player.leadingAnimalId === a.name) continue;
     a.wanderTimer -= dt;
     if (a.wanderTimer <= 0) {
       a.wanderTimer = 3500 + Math.random() * 5000;
@@ -1872,16 +1886,46 @@ function updateAnimals(dt) {
       if (d > 4) {
         a.x += (dx / d) * 0.4;
         a.y += (dy / d) * 0.4;
-        // آپدیت جهت و انیمیشن
         if (Math.abs(dx) > Math.abs(dy)) a.dir = dx > 0 ? 'right' : 'left';
         else a.dir = dy > 0 ? 'down' : 'up';
         a.animTimer += dt;
         if (a.animTimer > 150) { a.animFrame = (a.animFrame + 1) % 4; a.animTimer = 0; }
-      } else {
-        a.animFrame = 0;
-      }
+      } else a.animFrame = 0;
     }
   }
+}
+
+// ================================================================
+// MULTIPLAYER SYNC
+// ================================================================
+function syncMultiplayer(dt) {
+  if (!MP.connected) return;
+  MP.sendTimer += dt;
+  if (MP.sendTimer >= MP.SEND_INTERVAL) {
+    MP.sendTimer = 0;
+    const p = state.player;
+    sendToFriend({ type: 'state', x: p.x, y: p.y, dir: p.dir, animFrame: p.animFrame });
+  }
+  if (MP.isHost) {
+    MP.lastWorldSync += dt;
+    if (MP.lastWorldSync > MP.WORLD_SYNC_INTERVAL) {
+      MP.lastWorldSync = 0;
+      sendToFriend({
+        type: 'world',
+        npcs: state.npcs.map(n => ({ name: n.name, x: n.x, y: n.y, relation: n.relation })),
+        animals: state.animals.map(a => ({ name: a.name, x: a.x, y: a.y, owned: a.owned, forSale: a.forSale }))
+      });
+    }
+    MP.lastTimeSync += dt;
+    if (MP.lastTimeSync > MP.TIME_SYNC_INTERVAL) {
+      MP.lastTimeSync = 0;
+      sendToFriend({ type: 'time', day: state.day, time: state.time });
+    }
+  }
+  // نرم‌سازی موقعیت رفیق (interpolation)
+  MP.friend.x += (MP.friend.targetX - MP.friend.x) * 0.35;
+  MP.friend.y += (MP.friend.targetY - MP.friend.y) * 0.35;
+  if (MP.friend.bubbleTimer > 0) MP.friend.bubbleTimer -= dt;
 }
 
 // ================================================================
@@ -1911,7 +1955,6 @@ function draw() {
   else bgColor = '#1e3a24';
   ctx.fillStyle = bgColor;
   ctx.fillRect(0, 0, W, H);
-
   const gridSize = 50;
   ctx.strokeStyle = 'rgba(0,0,0,0.07)';
   ctx.lineWidth = 1;
@@ -1919,9 +1962,7 @@ function draw() {
   const startY = Math.floor(cy / gridSize) * gridSize;
   for (let x = startX; x < cx + W + gridSize; x += gridSize) { ctx.beginPath(); ctx.moveTo(x - cx, 0); ctx.lineTo(x - cx, H); ctx.stroke(); }
   for (let y = startY; y < cy + H + gridSize; y += gridSize) { ctx.beginPath(); ctx.moveTo(0, y - cy); ctx.lineTo(W, y - cy); ctx.stroke(); }
-
   for (const p of state.ponds) drawPond(p.x - cx, p.y - cy, p, hour);
-
   const flowerSize = 2 + Math.sin(performance.now() / 800) * 0.5;
   for (const f of state.flowers) {
     if (f.x < cx - 20 || f.x > cx + W + 20 || f.y < cy - 20 || f.y > cy + H + 20) continue;
@@ -1933,7 +1974,6 @@ function draw() {
     ctx.fillStyle = '#555'; ctx.beginPath(); ctx.ellipse(r.x - cx, r.y - cy, r.size, r.size * 0.7, 0, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = '#777'; ctx.beginPath(); ctx.ellipse(r.x - cx - r.size * 0.2, r.y - cy - r.size * 0.2, r.size * 0.6, r.size * 0.4, 0, 0, Math.PI * 2); ctx.fill();
   }
-
   const lampAlpha = hour < 6 || hour > 19 ? 1 : (hour > 18 ? (hour - 18) : Math.max(0, (6 - hour)));
   if (lampAlpha > 0.1) {
     for (const l of state.lamps) {
@@ -1949,7 +1989,6 @@ function draw() {
       ctx.beginPath(); ctx.arc(lx, ly - 42, 3, 0, Math.PI * 2); ctx.fill();
     }
   }
-
   const drawables = [];
   for (const t of state.trees) {
     if (t.x < cx - 100 || t.x > cx + W + 100 || t.y < cy - 100 || t.y > cy + H + 100) continue;
@@ -1961,11 +2000,13 @@ function draw() {
     drawables.push({ y: a.y, draw: () => drawAnimal(a.x - cx, a.y - cy, a, hour) });
   }
   for (const n of state.npcs) drawables.push({ y: n.y, draw: () => drawNPC(n.x - cx, n.y - cy, n, hour) });
+  // رفیق
+  if (MP.connected && MP.friend.active) {
+    drawables.push({ y: MP.friend.y, draw: () => drawFriend(MP.friend.x - cx, MP.friend.y - cy) });
+  }
   drawables.push({ y: state.player.y + (state.player.mount ? 30 : 0), draw: () => drawPlayer(state.player.x - cx, state.player.y - cy, hour) });
   drawables.sort((a, b) => a.y - b.y);
   for (const d of drawables) d.draw();
-
-  // رسم طناب اگه حیوان در دست داریم
   if (state.player.leadingAnimalId) {
     const a = state.animals.find(x => x.name === state.player.leadingAnimalId);
     if (a) {
@@ -1979,7 +2020,6 @@ function draw() {
       ctx.setLineDash([]);
     }
   }
-
   for (let i = state.particles.length - 1; i >= 0; i--) {
     const p = state.particles[i];
     p.x += p.vx; p.y += p.vy; p.vy += 0.08; p.life--;
@@ -2055,10 +2095,6 @@ function drawBuilding(x, y, b, hour) {
   const winColor = isNight ? '#f1c40f' : '#87ceeb';
   ctx.fillStyle = winColor;
   ctx.fillRect(x + 14, y + 18, 22, 22); ctx.fillRect(x + b.w - 36, y + 18, 22, 22);
-  if (isNight) {
-    ctx.fillStyle = 'rgba(241, 196, 15, 0.2)';
-    ctx.fillRect(x + 10, y + 14, 30, 30); ctx.fillRect(x + b.w - 40, y + 14, 30, 30);
-  }
   ctx.strokeStyle = '#3e2723'; ctx.lineWidth = 2;
   ctx.strokeRect(x + 14, y + 18, 22, 22); ctx.strokeRect(x + b.w - 36, y + 18, 22, 22);
   ctx.beginPath();
@@ -2095,10 +2131,8 @@ function drawAnimal(x, y, a, hour) {
 
 function drawHorseShape(x, y, color, hasRider, animal) {
   const flip = animal && animal.dir === 'left' ? -1 : 1;
-  const isWalking = animal && animal.animFrame % 2 === 1;
   ctx.save();
   if (flip === -1) { ctx.translate(x, y); ctx.scale(-1, 1); ctx.translate(-x, -y); }
-  
   ctx.fillStyle = color;
   ctx.beginPath(); ctx.ellipse(x, y, 26, 14, 0, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath();
@@ -2108,8 +2142,6 @@ function drawHorseShape(x, y, color, hasRider, animal) {
   ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(x + 36, y - 25, 1.5, 0, Math.PI * 2); ctx.fill();
   ctx.strokeStyle = '#3e2723'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(x + 22, y - 12); ctx.lineTo(x + 26, y - 22); ctx.stroke();
-  
-  // پاهای متحرک
   const legPhase = animal ? animal.animFrame * Math.PI / 2 : performance.now() / 300;
   const legOff1 = Math.sin(legPhase) * 4;
   const legOff2 = Math.sin(legPhase + Math.PI) * 4;
@@ -2118,11 +2150,9 @@ function drawHorseShape(x, y, color, hasRider, animal) {
   ctx.fillRect(x - 8, y + 8, 5, 18 + legOff2);
   ctx.fillRect(x + 8, y + 8, 5, 18 + legOff1);
   ctx.fillRect(x + 16, y + 8, 5, 18 + legOff2);
-  
   ctx.strokeStyle = '#3e2723'; ctx.lineWidth = 3;
   ctx.beginPath(); ctx.moveTo(x - 26, y - 4); ctx.quadraticCurveTo(x - 34, y + 2, x - 30, y + 14); ctx.stroke();
   ctx.restore();
-  
   if (hasRider) {
     ctx.fillStyle = '#4a148c'; ctx.fillRect(x - 10, y - 22, 18, 16);
     ctx.fillStyle = '#ffcc99'; ctx.beginPath(); ctx.arc(x - 1, y - 30, 9, 0, Math.PI * 2); ctx.fill();
@@ -2134,20 +2164,13 @@ function drawHorseShape(x, y, color, hasRider, animal) {
 function drawCamelShape(x, y, color, hasRider, animal) {
   const flip = animal && animal.dir === 'left' ? -1 : 1;
   const animFrame = animal ? animal.animFrame : Math.floor(performance.now() / 150) % 4;
-  
   ctx.save();
   if (flip === -1) { ctx.translate(x, y); ctx.scale(-1, 1); ctx.translate(-x, -y); }
-  
-  // سایه‌ی بدن
   ctx.fillStyle = color;
   ctx.beginPath(); ctx.ellipse(x, y, 30, 15, 0, 0, Math.PI * 2); ctx.fill();
-  
-  // دو کوهان با حرکت جزئی
   const humpBob = Math.sin(animFrame * Math.PI / 2) * 0.5;
   ctx.beginPath(); ctx.ellipse(x - 5, y - 14 + humpBob, 10, 12, 0, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.ellipse(x + 10, y - 14 + humpBob, 10, 12, 0, 0, Math.PI * 2); ctx.fill();
-  
-  // گردن بلند با انیمیشن بالا-پایین
   const neckSway = Math.sin(animFrame * Math.PI / 2) * 1.5;
   ctx.beginPath();
   ctx.moveTo(x + 22, y - 8);
@@ -2156,45 +2179,32 @@ function drawCamelShape(x, y, color, hasRider, animal) {
   ctx.quadraticCurveTo(x + 42 + neckSway, y - 28, x + 30, y - 4);
   ctx.closePath();
   ctx.fill();
-  
-  // سر
   ctx.beginPath(); ctx.ellipse(x + 44 + neckSway, y - 50, 9, 6, -0.4, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.ellipse(x + 50 + neckSway, y - 48, 4, 4, -0.2, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(x + 46 + neckSway, y - 52, 1.5, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = color; ctx.beginPath(); ctx.ellipse(x + 39 + neckSway, y - 55, 3, 5, 0.2, 0, Math.PI * 2); ctx.fill();
-  
-  // پاهای متحرک (خیلی بهتر)
   const legPhase = animFrame * Math.PI / 2;
-  const legFL = Math.sin(legPhase) * 5;          // جلو-چپ
-  const legFR = Math.sin(legPhase + Math.PI) * 5; // جلو-راست
-  const legBL = Math.sin(legPhase + Math.PI / 2) * 5; // عقب-چپ
-  const legBR = Math.sin(legPhase + 3 * Math.PI / 2) * 5; // عقب-راست
-  
+  const legFL = Math.sin(legPhase) * 5;
+  const legFR = Math.sin(legPhase + Math.PI) * 5;
+  const legBL = Math.sin(legPhase + Math.PI / 2) * 5;
+  const legBR = Math.sin(legPhase + 3 * Math.PI / 2) * 5;
   ctx.fillStyle = color;
-  // پاهای عقب
   ctx.fillRect(x - 20, y + 10, 4, 22 + legBL);
   ctx.fillRect(x - 10, y + 10, 4, 22 + legBR);
-  // پاهای جلو
   ctx.fillRect(x + 8, y + 10, 4, 22 + legFL);
   ctx.fillRect(x + 18, y + 10, 4, 22 + legFR);
-  
-  // سم‌ها (نوک پاها تیره)
   ctx.fillStyle = '#3e2723';
   ctx.fillRect(x - 20, y + 30 + legBL, 4, 2);
   ctx.fillRect(x - 10, y + 30 + legBR, 4, 2);
   ctx.fillRect(x + 8, y + 30 + legFL, 4, 2);
   ctx.fillRect(x + 18, y + 30 + legFR, 4, 2);
-  
-  // دم با حرکت
   const tailSway = Math.sin(performance.now() / 300) * 3;
   ctx.strokeStyle = '#5d4037'; ctx.lineWidth = 2.5;
   ctx.beginPath();
   ctx.moveTo(x - 30, y - 6);
   ctx.quadraticCurveTo(x - 38 + tailSway, y + 5, x - 34 + tailSway, y + 18);
   ctx.stroke();
-  
   ctx.restore();
-  
   if (hasRider) {
     ctx.fillStyle = '#4a148c'; ctx.fillRect(x - 8, y - 34, 18, 16);
     ctx.fillStyle = '#ffcc99'; ctx.beginPath(); ctx.arc(x + 1, y - 42, 9, 0, Math.PI * 2); ctx.fill();
@@ -2206,14 +2216,12 @@ function drawCamelShape(x, y, color, hasRider, animal) {
 function drawNPC(x, y, n, hour) {
   const isSpouse = n.name === state.spouse;
   if (isSpouse) {
-    // هاله‌ی صورتی برای همسر
     ctx.fillStyle = `rgba(255, 105, 180, ${0.15 + Math.sin(performance.now() / 400) * 0.08})`;
     ctx.beginPath(); ctx.arc(x, y, 35, 0, Math.PI * 2); ctx.fill();
   } else if (n.relation > 40) {
     ctx.fillStyle = `rgba(224, 86, 253, ${0.1 + Math.sin(performance.now() / 500) * 0.05})`;
     ctx.beginPath(); ctx.arc(x, y, 30, 0, Math.PI * 2); ctx.fill();
   }
-  
   ctx.fillStyle = 'rgba(0,0,0,0.35)';
   ctx.beginPath(); ctx.ellipse(x, y + 22, 13, 5, 0, 0, Math.PI * 2); ctx.fill();
   const isWalking = n.walking > 0;
@@ -2230,13 +2238,7 @@ function drawNPC(x, y, n, hour) {
   ctx.beginPath(); ctx.arc(x, y - 18 + bob, 10, Math.PI, 0); ctx.fill();
   ctx.fillStyle = '#000';
   ctx.fillRect(x - 4, y - 16 + bob, 2, 3); ctx.fillRect(x + 2, y - 16 + bob, 2, 3);
-  
-  // تاج برای همسر
-  if (isSpouse) {
-    ctx.font = '14px Tahoma';
-    ctx.fillText('👑', x, y - 28 + bob);
-  }
-  
+  if (isSpouse) { ctx.font = '14px Tahoma'; ctx.fillText('👑', x, y - 28 + bob); }
   const rel = n.relation;
   let icon = '💬', col = '#fff';
   if (isSpouse) { icon = '💍'; col = '#ff69b4'; }
@@ -2288,16 +2290,75 @@ function drawPlayer(x, y, hour) {
   else if (p.dir === 'right') ctx.fillRect(x + 4, y - 16 + bob, 2, 3);
   ctx.fillStyle = '#b0bec5'; ctx.fillRect(x + 11, y - 4 + bob, 3, 15);
   ctx.fillStyle = '#795548'; ctx.fillRect(x + 10, y + 8 + bob, 4, 4);
-  // نشون‌گر طناب در دست
+  // نام بازیکن
+  ctx.fillStyle = '#2ecc71';
+  ctx.font = 'bold 12px Tahoma'; ctx.textAlign = 'center';
+  ctx.strokeStyle = 'rgba(0,0,0,0.9)'; ctx.lineWidth = 3;
+  ctx.strokeText('من', x, y - 35); ctx.fillText('من', x, y - 35);
   if (p.leadingAnimalId) {
     ctx.font = '16px Tahoma'; ctx.textAlign = 'center';
-    ctx.fillText('🪢', x, y - 40);
+    ctx.fillText('🪢', x, y - 55);
   }
 }
 
-// ================================================================
-// MINIMAP
-// ================================================================
+function drawFriend(x, y) {
+  const f = MP.friend;
+  // هاله‌ی آبی مخصوص رفیق برای تشخیص راحت
+  ctx.fillStyle = `rgba(52, 152, 219, ${0.15 + Math.sin(performance.now() / 500) * 0.05})`;
+  ctx.beginPath(); ctx.arc(x, y, 30, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = 'rgba(0,0,0,0.4)';
+  ctx.beginPath(); ctx.ellipse(x, y + 22, 14, 5, 0, 0, Math.PI * 2); ctx.fill();
+  const bob = (f.animFrame % 2 === 1) ? 1.5 : 0;
+  ctx.fillStyle = '#0d47a1';
+  ctx.fillRect(x - 8, y + 8 + bob, 6, 14); ctx.fillRect(x + 2, y + 8 + bob, 6, 14);
+  ctx.fillStyle = '#1976d2'; ctx.fillRect(x - 10, y - 8 + bob, 20, 18);
+  ctx.fillStyle = '#0d47a1'; ctx.fillRect(x - 10, y + 4 + bob, 20, 3);
+  ctx.fillStyle = '#ffcc99'; ctx.beginPath(); ctx.arc(x, y - 16 + bob, 10, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#1a1a1a'; ctx.beginPath(); ctx.arc(x, y - 18 + bob, 10, Math.PI, 0); ctx.fill();
+  ctx.fillStyle = '#000';
+  if (f.dir === 'down') {
+    ctx.fillRect(x - 4, y - 16 + bob, 2, 3); ctx.fillRect(x + 2, y - 16 + bob, 2, 3);
+  } else if (f.dir === 'left') ctx.fillRect(x - 6, y - 16 + bob, 2, 3);
+  else if (f.dir === 'right') ctx.fillRect(x + 4, y - 16 + bob, 2, 3);
+  // نام
+  ctx.fillStyle = '#3498db';
+  ctx.font = 'bold 12px Tahoma'; ctx.textAlign = 'center';
+  ctx.strokeStyle = 'rgba(0,0,0,0.9)'; ctx.lineWidth = 3;
+  const nameLabel = '👤 ' + f.name;
+  ctx.strokeText(nameLabel, x, y - 35); ctx.fillText(nameLabel, x, y - 35);
+  // حباب چت
+  if (f.bubbleTimer > 0 && f.bubbleMsg) {
+    ctx.font = 'bold 12px Tahoma';
+    const tw = Math.min(220, ctx.measureText(f.bubbleMsg).width + 24);
+    const bx = x - tw / 2;
+    const by = y - 75;
+    ctx.fillStyle = 'rgba(0,0,0,0.9)';
+    ctx.strokeStyle = '#3498db';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    if (ctx.roundRect) {
+      ctx.roundRect(bx, by, tw, 28, 8);
+    } else {
+      ctx.rect(bx, by, tw, 28);
+    }
+    ctx.fill(); ctx.stroke();
+    // فلش کوچک
+    ctx.beginPath();
+    ctx.moveTo(x - 5, by + 28);
+    ctx.lineTo(x + 5, by + 28);
+    ctx.lineTo(x, by + 34);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(0,0,0,0.9)';
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+    // اگه طولانی بود کوتاه کن
+    let displayMsg = f.bubbleMsg;
+    if (displayMsg.length > 30) displayMsg = displayMsg.substring(0, 28) + '...';
+    ctx.fillText(displayMsg, x, by + 19);
+  }
+}
+
 function drawMinimap() {
   const mw = 180;
   mctx.clearRect(0, 0, mw, mw);
@@ -2319,6 +2380,13 @@ function drawMinimap() {
     if (n.name === state.spouse) mctx.fillStyle = '#ff69b4';
     else mctx.fillStyle = n.relation > 40 ? '#e056fd' : '#f1c40f';
     mctx.beginPath(); mctx.arc(n.x * scale, n.y * scale, 2.5, 0, Math.PI * 2); mctx.fill();
+  }
+  // رفیق روی مینی‌مپ
+  if (MP.connected && MP.friend.active) {
+    mctx.fillStyle = '#3498db';
+    mctx.beginPath(); mctx.arc(MP.friend.x * scale, MP.friend.y * scale, 3.5, 0, Math.PI * 2); mctx.fill();
+    mctx.strokeStyle = '#fff'; mctx.lineWidth = 1;
+    mctx.beginPath(); mctx.arc(MP.friend.x * scale, MP.friend.y * scale, 5, 0, Math.PI * 2); mctx.stroke();
   }
   mctx.fillStyle = '#e74c3c';
   mctx.beginPath(); mctx.arc(state.player.x * scale, state.player.y * scale, 3.5, 0, Math.PI * 2); mctx.fill();
@@ -2396,27 +2464,21 @@ function openPondPanel(pond) {
   const subtitle = document.getElementById('pondSubtitle');
   const choicesEl = document.getElementById('pondChoices');
   choicesEl.innerHTML = '';
-
   const nearbyNPCs = state.npcs.filter(n => {
     const d = Math.hypot(n.x - state.player.x, n.y - state.player.y);
     return d < 200 && n.relation > 30;
   }).sort((a, b) => b.relation - a.relation);
-
-  // اگه همسر نزدیکه، اولویت بده
   const spouseNear = nearbyNPCs.find(n => n.name === state.spouse);
   const bestCompanion = spouseNear || nearbyNPCs[0] || null;
   const hour = state.time / 60;
-
   if (bestCompanion) {
     const isSpouse = bestCompanion.name === state.spouse;
     const rel = bestCompanion.relation;
     const isClose = rel >= 70;
     const isFriend = rel >= 40;
-    
     if (isSpouse) subtitle.textContent = `${bestCompanion.name} همراته. هوا دل‌انگیزه و کنار هم بودن حس خوبی داره...`;
     else if (isClose) subtitle.textContent = `با ${bestCompanion.name} اومدی کنار ${pond.name}.`;
     else if (isFriend) subtitle.textContent = `با ${bestCompanion.name} کنار ${pond.name} هستی.`;
-    
     if (isSpouse) {
       addPondChoice(choicesEl, `💕 کنار هم بشینیم و دست هم رو بگیریم`, 'special', () => {
         state.hp = Math.min(100, state.hp + 20); state.energy = Math.min(100, state.energy + 20);
@@ -2538,7 +2600,6 @@ function trySteal() {
   if (npc.dialog === 'thief') { notify('از یه دزد نمیشه دزدی کرد!', 'bad'); return; }
   if (npc.name === state.spouse) { notify('از همسرت دزدی؟! 😱', 'bad'); return; }
   if (npc.relation > 50) { notify(`این دوسته! چطور می‌تونی دزدی کنی؟!`, 'bad'); return; }
-
   let successChance = 50;
   const hour = state.time / 60;
   if (hour >= 21 || hour < 5) successChance += 15;
@@ -2554,13 +2615,11 @@ function trySteal() {
   if (state.energy < 30) successChance -= 10;
   if (state.hp < 50) successChance -= 5;
   successChance = Math.max(5, Math.min(95, successChance));
-
   const baseLoot = 15 + Math.floor(npc.relation * -0.3);
   const loot = Math.max(5, baseLoot + Math.floor(Math.random() * 25));
   const roll = Math.random() * 100;
   const success = roll < successChance;
   state.stats.totalStealsAttempted++;
-
   if (success) {
     const margin = successChance - roll;
     let outcome = 'success';
@@ -2621,7 +2680,7 @@ function closeStealResult() {
 }
 
 // ================================================================
-// ANIMAL
+// ANIMAL INTERACTION
 // ================================================================
 function handleAnimal(a) {
   const p = state.player;
@@ -2632,10 +2691,7 @@ function handleAnimal(a) {
     saveGame(true);
     return;
   }
-  if (p.mount) {
-    p.mount = null; p.mountedOn = null;
-    document.getElementById('mountStatus').style.display = 'none';
-  }
+  if (p.mount) { p.mount = null; p.mountedOn = null; document.getElementById('mountStatus').style.display = 'none'; }
   if (a.forSale) { showBuyAnimalDialog(a); return; }
   if (a.owned) { mountAnimal(a); return; }
   tryTame(a);
@@ -2711,17 +2767,14 @@ function openNPCdialog(npc) {
   npc.memory.lastMeetTime = state.time;
   npc.memory.remembersPlayer = true;
   updateQuestProgressByType('meet', 1);
-
   const isFirstTime = npc.memory.timesMet === 1;
   const missedYou = npc.relation > 50;
-
   if (d === 'farmer') {
     if (isFirstTime) text = 'سلام رفیق! من حسن‌ام، کشاورز. خوش اومدی!';
     else if (missedYou) text = 'به به! کی می‌بینمت رفیق!';
     else text = 'سلام! چه خبر رفیق؟';
-  } else if (d === 'merchant') {
-    text = `سلام! من زهرا هستم. (سکه: ${Math.floor(state.coins)})`;
-  } else if (d === 'tavern') text = 'به میخانه خوش اومدی!';
+  } else if (d === 'merchant') text = `سلام! من زهرا هستم. (سکه: ${Math.floor(state.coins)})`;
+  else if (d === 'tavern') text = 'به میخانه خوش اومدی!';
   else if (d === 'camelDealer') text = 'سلام! من سارا هستم، شتردار.';
   else if (d === 'horseDealer') text = 'درود! من کریم‌ام.';
   else if (d === 'storageKeeper') text = 'من نگهبان انبارم.';
@@ -2733,26 +2786,14 @@ function openNPCdialog(npc) {
     else if (missedYou) text = 'وای سلام! خیلی وقته ندیدمت!';
     else text = 'سلام! چه خبر؟';
   }
-
-  // پیشنهاد ازدواج
   const marryCheck = canMarry(npc);
   if (npc.relation >= 90 && !state.spouse) {
-    if (marryCheck.ok) {
-      choices.push({ label: '💍 خواستگاری کن!', cls: 'marry', action: () => { closeDialog(); proposeMarriage(npc); } });
-    } else {
-      choices.push({ label: `💍 خواستگاری (${marryCheck.reason})`, cls: 'marry', action: () => notify(marryCheck.reason, 'bad') });
-    }
+    if (marryCheck.ok) choices.push({ label: '💍 خواستگاری کن!', cls: 'marry', action: () => { closeDialog(); proposeMarriage(npc); } });
+    else choices.push({ label: `💍 خواستگاری (${marryCheck.reason})`, cls: 'marry', action: () => notify(marryCheck.reason, 'bad') });
   }
-
-  // کار برای NPC
-  if (JOBS[d] && !state.activeJob) {
-    choices.push({ label: `💼 کار برام داری؟`, cls: 'command', action: () => { closeDialog(); openWorkPanel(npc); } });
-  }
-
+  if (JOBS[d] && !state.activeJob) choices.push({ label: `💼 کار برام داری؟`, cls: 'command', action: () => { closeDialog(); openWorkPanel(npc); } });
   const hasGiftableItem = state.inventory.some(it => it);
-  if (npc.relation >= 10 && hasGiftableItem) {
-    choices.push({ label: '🎁 بهش هدیه بده', cls: 'gift', action: () => { closeDialog(); openGiftPanel(npc); } });
-  }
+  if (npc.relation >= 10 && hasGiftableItem) choices.push({ label: '🎁 بهش هدیه بده', cls: 'gift', action: () => { closeDialog(); openGiftPanel(npc); } });
   if (npc.relation >= 70 && !npc.memory.invitedHome) {
     choices.push({ label: '🏠 دعوتش کن به خونه‌ت', cls: 'invite', action: () => {
       npc.memory.invitedHome = true;
@@ -2765,7 +2806,6 @@ function openNPCdialog(npc) {
       closeDialog(); saveGame(true);
     } });
   }
-
   if (d === 'farmer') {
     choices.push({ label: '🐑 کار برام داری؟', action: () => showFarmerQuest(npc) });
     choices.push({ label: '🍞 چیزی برای فروش داری؟', action: () => showFarmerTrade(npc) });
@@ -2793,7 +2833,7 @@ function openNPCdialog(npc) {
     choices.push({ label: `🐪 ${type}های فروشی رو ببین`, action: () => { closeDialog(); notify(`از بیرون نزدیک ${type}ها برو و E بزن`, 'info'); } });
     choices.push({ label: 'داستانی از کارت بگو', action: () => { notify(`از ${npc.name} داستان شنیدی`, 'info'); addFriend(npc, 5); npc.emotion.icon = '😊'; npc.emotion.timer = 2000; closeDialog(); } });
   } else if (d === 'storageKeeper') {
-    choices.push({ label: '📦 چی داری برای فروش؟', action: () => { 
+    choices.push({ label: '📦 چی داری برای فروش؟', action: () => {
       closeDialog();
       showDialog('نگهبان انبار', 'ابزار و لوازم داریم.', [
         { label: '🌿 گیاه (۱۵)', action: () => buyItem('herb', 15) },
@@ -2813,7 +2853,6 @@ function openNPCdialog(npc) {
     choices.push({ label: 'گپ بزنیم', action: () => { addFriend(npc, 5); notify('با لیلا گپ زدی', 'good'); npc.emotion.icon = '😊'; npc.emotion.timer = 2000; closeDialog(); } });
     choices.push({ label: 'بریم قدم بزنیم', action: () => { addFriend(npc, 10); notify('با لیلا قدم زدید', 'good'); addJournalEntry('friend', 'با لیلا قدم زدم.', '🚶'); closeDialog(); saveGame(true); } });
   }
-
   choices.push({ label: 'خداحافظ', action: closeDialog });
   showDialog(npc.name, text, choices);
 }
@@ -3188,6 +3227,12 @@ function drawBigMap() {
     ctx.fillStyle = a.type === 'camel' ? '#e67e22' : '#8b4513';
     ctx.beginPath(); ctx.arc(mx + a.x * scale, my + a.y * scale, 3, 0, Math.PI * 2); ctx.fill();
   }
+  if (MP.connected && MP.friend.active) {
+    ctx.fillStyle = '#3498db';
+    ctx.beginPath(); ctx.arc(mx + MP.friend.x * scale, my + MP.friend.y * scale, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 12px Tahoma'; ctx.textAlign = 'center';
+    ctx.fillText('👤 ' + MP.friend.name, mx + MP.friend.x * scale, my + MP.friend.y * scale - 12);
+  }
   ctx.fillStyle = '#e74c3c';
   ctx.beginPath(); ctx.arc(mx + state.player.x * scale, my + state.player.y * scale, 5, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = '#fff'; ctx.font = 'bold 18px Tahoma'; ctx.textAlign = 'center';
@@ -3214,6 +3259,7 @@ function loop(now) {
   updateHUD(dt);
   updateSurvival(dt);
   updateRopeStatus();
+  syncMultiplayer(dt);
   draw();
   if (state.showBigMap) drawBigMap();
   minimapTimer += dt;
@@ -3246,6 +3292,72 @@ const loadInterval = setInterval(() => {
   }
 }, 120);
 
+// ================================================================
+// MP MENU BUTTONS
+// ================================================================
+document.getElementById('btnHost').onclick = () => {
+  if (!MP.peer) initPeer();
+  MP.isHost = true;
+  document.getElementById('hostBox').style.display = 'block';
+  document.getElementById('mpStatus').textContent = '⏳ منتظر اتصال رفیقت...';
+};
+
+document.getElementById('btnJoin').onclick = () => {
+  if (!MP.peer) initPeer();
+  document.getElementById('joinBox').style.display = 'flex';
+};
+
+document.getElementById('btnConnect').onclick = () => {
+  const id = document.getElementById('friendIdInput').value.trim();
+  if (!id) return;
+  MP.isHost = false;
+  connectToFriend(id);
+};
+
+document.getElementById('btnCopy').onclick = () => {
+  const link = document.getElementById('myLinkBox').textContent;
+  navigator.clipboard.writeText(link).then(() => notify('📋 کپی شد!', 'good')).catch(() => {
+    const range = document.createRange();
+    range.selectNode(document.getElementById('myLinkBox'));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    notify('📋 کپی شد!', 'good');
+  });
+};
+
+document.getElementById('btnSolo').onclick = () => {
+  MP.connected = false;
+  MP.isHost = false;
+  startGame();
+};
+
+function startGame() {
+  document.getElementById('mpMenu').style.display = 'none';
+  document.getElementById('game').style.display = 'block';
+  document.getElementById('loading').style.display = 'none';
+  if (!state.inventory.some(it => it)) initInventory();
+  if (state.npcs.length === 0) initWorld();
+  updateFriendStatus();
+  resize();
+}
+
+// چک URL برای join خودکار
+window.addEventListener('load', () => {
+  const params = new URLSearchParams(location.search);
+  const joinId = params.get('join');
+  if (joinId) {
+    initPeer();
+    setTimeout(() => {
+      MP.isHost = false;
+      connectToFriend(joinId);
+    }, 1200);
+  }
+});
+
+// ================================================================
+// INIT WORLD + LOAD
+// ================================================================
 initWorld();
 
 const hasSave = localStorage.getItem(SAVE_KEY);
@@ -3254,23 +3366,12 @@ if (hasSave) {
   const loaded = loadGame();
   if (loaded) {
     const saveData = JSON.parse(localStorage.getItem(SAVE_KEY));
-    const date = new Date(saveData.savedAt);
     saveInfo.textContent = `✅ ادامه‌ی بازی از روز ${saveData.day}`;
-    if (state.spouse) {
-      setTimeout(() => notify(`💍 خوش برگشتی! ${state.spouse} منتظرته`, 'marry'), 1500);
-    } else {
-      setTimeout(() => notify('💾 بازی ادامه پیدا کرد!', 'good'), 1200);
-    }
   } else {
     initInventory();
-    notify('🌍 به دنیای زندگی خوش آمدی!', 'good');
   }
 } else {
   initInventory();
-  setTimeout(() => {
-    notify('🌍 به دنیای زندگی خوش آمدی!', 'good');
-    addJournalEntry('money', 'به دنیای زندگی وارد شدم.', '🌟');
-  }, 1200);
 }
 
 renderQuests();
@@ -3281,18 +3382,11 @@ updateSpouseStatus();
 window.addEventListener('beforeunload', () => saveGame(true));
 setInterval(() => saveGame(true), AUTO_SAVE_INTERVAL);
 
-// چک آمار برای مأموریت earn و spend
 setInterval(() => {
   updateQuestProgressByType('earn', 0, Math.floor(state.coins));
   updateQuestProgressByType('spend', 0, state.stats.totalMoneySpent);
   updateQuestProgressByType('friend', 0, state.npcs.filter(n => n.relation >= 40).length);
 }, 3000);
-
-setTimeout(() => notify('💾 بازی خودکار ذخیره میشه', 'info'), 2500);
-setTimeout(() => notify('📔 با J دفتر خاطراتت', 'info'), 4000);
-setTimeout(() => notify('🪢 با R حیوان اهلی رو با طناب بگیر', 'info'), 5500);
-setTimeout(() => notify('💍 با رابطه ≥۹۰، اعتبار ≥۵۰، ۳۰۰ سکه و حلقه می‌تونی ازدواج کنی', 'marry'), 7000);
-setTimeout(() => notify('💕 وقتی همسر داشته باشی با C فرمان بده', 'love'), 9000);
 
 requestAnimationFrame(loop);
 </script>
