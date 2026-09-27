@@ -708,8 +708,11 @@ function connectToFriend(friendId) {
 
 function setupConnection() {
   const conn = MP.conn;
+  let openFired = false;
 
-  conn.on('open', () => {
+  const onOpen = () => {
+    if (openFired) return;  // جلوگیری از دوبار اجرا
+    openFired = true;
     MP.connected = true;
     MP.friend.active = true;
     MP.friend.lastSeen = performance.now();
@@ -720,7 +723,15 @@ function setupConnection() {
     setMyStatus('connected');
     sendToFriend({ type: 'hello', name: 'رفیق', status: 'connected' });
     updateFriendStatus();
-  });
+  };
+
+  // اگه connection از قبل open شده، فوری setup کن
+  if (conn.open) {
+    mpLog('⚡ connection از قبل open بود — فوری setup', 'info');
+    setTimeout(onOpen, 50);
+  } else {
+    conn.on('open', onOpen);
+  }
 
   conn.on('data', (data) => {
     MP.friend.lastSeen = performance.now();
