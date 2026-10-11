@@ -105,9 +105,15 @@
     color: #fff;
   }
   .btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .btn.primary:disabled {
+    background: #2a3142;
+    border-color: #2a3142;
+    color: #6b7280;
+    cursor: not-allowed;
+    opacity: 1;
+  }
   .btn.ghost { background: transparent; }
   .btn.ghost:hover { background: var(--panel-2); }
-  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
   .divider {
     text-align: center;
     color: var(--text-dim);
@@ -183,6 +189,69 @@
   .log-box .l-success { color: var(--green); }
   .log-box .l-warn { color: var(--yellow); }
   .log-box .l-error { color: var(--red); }
+
+  /* ============ GUEST QUICK NAME ============ */
+  #guestNamePanel {
+    position: fixed; inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    padding: 20px;
+    z-index: 100;
+  }
+  #guestNamePanel .box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  #guestNamePanel h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  #guestNamePanel p {
+    color: var(--text-dim);
+    font-size: 13px;
+    margin-bottom: 22px;
+    line-height: 1.7;
+  }
+  #guestNamePanel input {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 15px;
+    text-align: center;
+    outline: none;
+    margin-bottom: 14px;
+    transition: border-color 0.15s;
+  }
+  #guestNamePanel input:focus { border-color: var(--accent); }
+  #guestNamePanel button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background 0.15s;
+  }
+  #guestNamePanel button:hover { background: var(--accent-hover); }
+  #guestNamePanel button:disabled {
+    background: #2a3142;
+    color: #6b7280;
+    cursor: not-allowed;
+  }
 
   /* ============ CHAT SCREEN ============ */
   #chat {
@@ -412,54 +481,47 @@
 </head>
 <body>
 
-<!-- ============ SETUP SCREEN ============ -->
+<!-- ============ SETUP SCREEN (HOST ONLY) ============ -->
 <div id="setup">
   <div class="setup-card">
-    <h1 id="setupTitle">💬 پیام‌رسان</h1>
-    <p class="sub" id="setupSub">گفتگوی دوطرفه، ساده و سریع</p>
+    <h1>💬 پیام‌رسان</h1>
+    <p class="sub">گفتگوی دوطرفه، ساده و سریع</p>
 
-    <!-- STEP 1: Name + Mode -->
+    <!-- STEP 1: Name -->
     <div id="step1">
       <div class="field">
         <label>اسم شما</label>
         <input type="text" id="myName" placeholder="اسمت رو بنویس..." maxlength="20" />
       </div>
       <button class="btn primary" id="btnCreate">🏠 ساخت گفتگو</button>
-      <div class="divider">یا</div>
-      <button class="btn" id="btnJoinShow">🚪 پیوستن به گفتگو</button>
     </div>
 
-    <!-- STEP 2: Host -->
+    <!-- STEP 2: Host - waiting for guest -->
     <div id="stepHost" style="display:none;">
       <p style="font-size:13px;color:var(--text-dim);margin-bottom:10px;">
-        این لینک رو برای دوستت بفرست تا بهت وصل بشه:
+        این لینک رو برای دوستت بفرست — به محض ورودش، دکمه‌ی زیر فعال می‌شه:
       </p>
       <div class="link-box" id="myLinkBox">⏳ در حال ساخت لینک...</div>
       <button class="btn" id="btnCopy" disabled>📋 کپی لینک</button>
       <div class="status" id="hostStatus">
         <span class="dot waiting"></span>
-        <span class="status-text">در حال آماده‌سازی...</span>
+        <span class="status-text">منتظر ورود دوستت...</span>
       </div>
       <button class="btn primary" id="btnGoChatHost" disabled>شروع گفتگو</button>
       <button class="btn ghost" id="btnBackHost">← برگشت</button>
     </div>
 
-    <!-- STEP 3: Join -->
-    <div id="stepJoin" style="display:none;">
-      <div class="field">
-        <label>لینک یا کد گفتگو</label>
-        <input type="text" id="joinInput" placeholder="لینک کامل یا کد را وارد کن..." style="direction:ltr;text-align:left;" />
-      </div>
-      <button class="btn primary" id="btnConnect">🔌 اتصال</button>
-      <div class="status" id="joinStatus">
-        <span class="dot waiting"></span>
-        <span class="status-text">در انتظار اتصال...</span>
-      </div>
-      <button class="btn primary" id="btnGoChatGuest" disabled>شروع گفتگو</button>
-      <button class="btn ghost" id="btnBackJoin">← برگشت</button>
-    </div>
-
     <div class="log-box" id="logBox"></div>
+  </div>
+</div>
+
+<!-- ============ GUEST NAME PANEL (فقط اگه اسم ذخیره نشده باشه) ============ -->
+<div id="guestNamePanel">
+  <div class="box">
+    <h2>👋 خوش اومدی!</h2>
+    <p>قبل از ورود به گفتگو، یه اسم برای خودت انتخاب کن.<br>این اسم برای دوستت نمایش داده می‌شه.</p>
+    <input type="text" id="guestNameInput" placeholder="اسمت..." maxlength="20" />
+    <button id="btnGuestEnter" disabled>ورود به گفتگو</button>
   </div>
 </div>
 
@@ -512,7 +574,9 @@ const APP = {
   connected: false,
   myName: localStorage.getItem('chat_name') || '',
   peerName: 'دوست',
-  connectAttempted: false
+  connectAttempted: false,
+  guestMode: false,
+  pendingJoinId: null
 };
 
 // ================================================================
@@ -524,6 +588,7 @@ const chatEl = $('chat');
 const messagesEl = $('messages');
 const msgInput = $('msgInput');
 const logBox = $('logBox');
+const guestNamePanel = $('guestNamePanel');
 
 // ================================================================
 // LOG
@@ -572,16 +637,24 @@ function initPeer() {
   APP.peer.on('open', id => {
     APP.myId = id;
     log(`آماده شد. شناسه: ${id}`, 'success');
-    const link = buildLink(id);
-    $('myLinkBox').textContent = link;
-    $('btnCopy').disabled = false;
-    setStatus('hostStatus', 'waiting', 'منتظر ورود دوستت...');
+
+    if (APP.isHost) {
+      const link = buildLink(id);
+      $('myLinkBox').textContent = link;
+      $('btnCopy').disabled = false;
+      setStatus('hostStatus', 'waiting', 'منتظر ورود دوستت...');
+    } else {
+      // مهمان: به محض آماده شدن Peer، به میزبان وصل شو
+      if (APP.pendingJoinId) {
+        connectToFriend(APP.pendingJoinId);
+      }
+    }
   });
 
   APP.peer.on('error', err => {
     log(`خطا: ${err.type}`, 'error');
     if (err.type === 'peer-unavailable') {
-      setStatus('joinStatus', 'error', 'کد پیدا نشد یا طرف مقابل آفلاین است');
+      if (APP.isHost) setStatus('hostStatus', 'error', 'کد پیدا نشد');
       APP.connectAttempted = false;
     } else if (err.type === 'unavailable-id') {
       APP.peer.destroy();
@@ -620,8 +693,7 @@ function connectToFriend(id) {
   const attempt = () => {
     if (!APP.peer || !APP.myId) { setTimeout(attempt, 300); return; }
     if (APP.conn && APP.conn.open) return;
-    setStatus('joinStatus', 'connecting', 'در حال اتصال...');
-    log(`اتصال به: ${id}`, 'info');
+    log(`اتصال به میزبان...`, 'info');
     APP.conn = APP.peer.connect(id, { reliable: true });
     APP.isHost = false;
     setupConnection();
@@ -638,11 +710,20 @@ function setupConnection() {
     opened = true;
     APP.connected = true;
     log('اتصال برقرار شد!', 'success');
-    setStatus('hostStatus', 'connected', 'وصل شد');
-    setStatus('joinStatus', 'connected', 'وصل شدی');
-    $('btnGoChatHost').disabled = false;
-    $('btnGoChatGuest').disabled = false;
+
+    // ارسال نام
     send({ type: 'hello', name: APP.myName });
+
+    if (APP.isHost) {
+      // میزبان: دکمه رو آبی/فعال کن
+      setStatus('hostStatus', 'connected', '✅ دوستت وصل شد!');
+      $('btnGoChatHost').disabled = false;
+      // فوکوس روی دکمه برای جلب توجه
+      $('btnGoChatHost').focus();
+    } else {
+      // مهمان: مستقیم برو تو چت
+      enterChat();
+    }
   };
 
   if (conn.open) setTimeout(onOpen, 30);
@@ -656,8 +737,14 @@ function setupConnection() {
   conn.on('close', () => {
     APP.connected = false;
     log('اتصال قطع شد.', 'warn');
-    setPeerStatus('error', 'قطع شد');
-    addSystemMessage('اتصال قطع شد');
+    if (chatEl.style.display === 'flex') {
+      setPeerStatus('error', 'قطع شد');
+      addSystemMessage('اتصال قطع شد');
+    }
+    if (APP.isHost) {
+      setStatus('hostStatus', 'error', 'اتصال قطع شد');
+      $('btnGoChatHost').disabled = true;
+    }
   });
 
   conn.on('error', err => {
@@ -803,9 +890,21 @@ function autoResize() {
 }
 
 // ================================================================
+// ENTER CHAT
+// ================================================================
+function enterChat() {
+  setupEl.style.display = 'none';
+  guestNamePanel.style.display = 'none';
+  chatEl.style.display = 'flex';
+  updatePeerInfo();
+  msgInput.focus();
+  addSystemMessage('گفتگو شروع شد');
+}
+
+// ================================================================
 // EVENT LISTENERS
 // ================================================================
-// Setup - Step 1
+// Host: create room
 $('btnCreate').onclick = () => {
   const name = $('myName').value.trim() || 'کاربر';
   APP.myName = name.substring(0, 20);
@@ -816,23 +915,9 @@ $('btnCreate').onclick = () => {
   initPeer();
 };
 
-$('btnJoinShow').onclick = () => {
-  const name = $('myName').value.trim() || 'کاربر';
-  APP.myName = name.substring(0, 20);
-  localStorage.setItem('chat_name', APP.myName);
-  $('step1').style.display = 'none';
-  $('stepJoin').style.display = 'block';
-  APP.isHost = false;
-  initPeer();
-};
-
-// Back buttons
+// Back
 $('btnBackHost').onclick = () => {
   $('stepHost').style.display = 'none';
-  $('step1').style.display = 'block';
-};
-$('btnBackJoin').onclick = () => {
-  $('stepJoin').style.display = 'none';
   $('step1').style.display = 'block';
 };
 
@@ -846,31 +931,8 @@ $('btnCopy').onclick = () => {
   }).catch(() => log('کپی نشد', 'warn'));
 };
 
-// Connect
-$('btnConnect').onclick = () => {
-  const raw = $('joinInput').value.trim();
-  if (!raw) return;
-  let id = raw;
-  try {
-    if (raw.includes('join=') || raw.startsWith('http')) {
-      const url = new URL(raw.startsWith('http') ? raw : 'http://x/?join=' + raw);
-      id = url.searchParams.get('join') || raw;
-    }
-  } catch(e) {}
-  connectToFriend(id.trim());
-};
-
-// Go to chat
+// Host: go to chat (فقط وقتی فعال شد)
 $('btnGoChatHost').onclick = () => enterChat();
-$('btnGoChatGuest').onclick = () => enterChat();
-
-function enterChat() {
-  setupEl.style.display = 'none';
-  chatEl.style.display = 'flex';
-  updatePeerInfo();
-  msgInput.focus();
-  addSystemMessage('گفتگو شروع شد');
-}
 
 // Leave
 $('btnLeave').onclick = () => {
@@ -935,33 +997,62 @@ $('imageViewer').onclick = () => {
   $('imageViewer').classList.remove('open');
 };
 
+// Guest name panel
+$('guestNameInput').addEventListener('input', e => {
+  $('btnGuestEnter').disabled = e.target.value.trim().length === 0;
+});
+
+$('btnGuestEnter').onclick = () => {
+  const name = $('guestNameInput').value.trim();
+  if (!name) return;
+  APP.myName = name.substring(0, 20);
+  localStorage.setItem('chat_name', APP.myName);
+  guestNamePanel.style.display = 'none';
+  // حالا Peer رو راه‌اندازی کن و وصل شو
+  initPeer();
+  // اگه Peer از قبل آماده بود (چون قبلاً init کرده بودیم)، مستقیم وصل شو
+  if (APP.myId && APP.pendingJoinId) {
+    connectToFriend(APP.pendingJoinId);
+  }
+};
+
 // ================================================================
 // INIT
 // ================================================================
 window.addEventListener('load', () => {
   const saved = localStorage.getItem('chat_name');
-  if (saved) $('myName').value = saved;
+  if (saved) {
+    $('myName').value = saved;
+    $('guestNameInput').value = saved;
+  }
 
   const params = new URLSearchParams(location.search);
   const joinId = params.get('join');
 
   if (joinId) {
-    // Guest mode - go directly to join with auto-connect
-    $('setupSub').textContent = 'به گفتگو خوش اومدی!';
-    $('step1').style.display = 'none';
-    $('stepJoin').style.display = 'block';
-    $('joinInput').value = joinId;
+    // ============ حالت مهمان ============
+    APP.guestMode = true;
     APP.isHost = false;
+    APP.pendingJoinId = joinId;
 
-    // Use saved name or prompt
-    const name = saved || 'کاربر';
-    APP.myName = name;
-    $('myName').value = name;
-
-    initPeer();
-    setTimeout(() => {
-      connectToFriend(joinId);
-    }, 800);
+    if (saved && saved.length > 0) {
+      // اسم ذخیره شده → کاملاً خودکار وارد چت شو
+      APP.myName = saved.substring(0, 20);
+      log(`ورود خودکار به گفتگو با نام "${APP.myName}"`, 'success');
+      // Peer رو راه‌اندازی کن
+      initPeer();
+      // وقتی Peer آماده شد، خودکار وصل می‌شه (در on('open') هندل شده)
+    } else {
+      // اسم ذخیره نشده → ازش بپرس، بعد مستقیم ببر تو چت
+      setupEl.style.display = 'none';
+      guestNamePanel.style.display = 'flex';
+      $('guestNameInput').focus();
+      // Peer رو از قبل راه‌اندازی کن تا معطل نشیم
+      initPeer();
+    }
+  } else {
+    // ============ حالت میزبان ============
+    // setup پیش‌فرض نمایش داده می‌شه
   }
 });
 
