@@ -36,69 +36,6 @@
   ::-webkit-scrollbar-thumb { background: #2f3542; border-radius: 4px; }
   ::-webkit-scrollbar-thumb:hover { background: #3d4455; }
 
-  /* ============ NAME PROMPT (فقط اگه اسم ذخیره نشده) ============ */
-  #namePrompt {
-    position: fixed; inset: 0;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg);
-    padding: 20px;
-    z-index: 200;
-  }
-  #namePrompt .box {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 32px;
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  }
-  #namePrompt h2 {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 8px;
-  }
-  #namePrompt p {
-    color: var(--text-dim);
-    font-size: 13px;
-    margin-bottom: 22px;
-    line-height: 1.7;
-  }
-  #namePrompt input {
-    width: 100%;
-    padding: 12px 14px;
-    background: var(--panel-2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text);
-    font-size: 15px;
-    text-align: center;
-    outline: none;
-    margin-bottom: 14px;
-    transition: border-color 0.15s;
-  }
-  #namePrompt input:focus { border-color: var(--accent); }
-  #namePrompt button {
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-    background: var(--accent);
-    color: #fff;
-    font-size: 15px;
-    font-weight: 600;
-    transition: background 0.15s;
-  }
-  #namePrompt button:hover { background: var(--accent-hover); }
-  #namePrompt button:disabled {
-    background: #2a3142;
-    color: #6b7280;
-    cursor: not-allowed;
-  }
-
   /* ============ CHAT SCREEN ============ */
   #chat {
     display: flex;
@@ -109,7 +46,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 20px;
+    padding: 10px 18px;
     background: var(--panel);
     border-bottom: 1px solid var(--border);
     flex-shrink: 0;
@@ -121,21 +58,36 @@
     gap: 12px;
     min-width: 0;
   }
+  .chat-header .right {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+    align-items: center;
+  }
+
   .avatar {
-    width: 38px; height: 38px;
+    width: 40px; height: 40px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--accent), #8b5cf6);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    font-size: 15px;
+    font-size: 16px;
     color: #fff;
     flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   .avatar.me {
     background: linear-gradient(135deg, #10b981, #059669);
   }
+
   .peer-info {
     min-width: 0;
   }
@@ -159,31 +111,10 @@
     border-radius: 50%;
     flex-shrink: 0;
   }
-  .chat-header .right {
-    display: flex;
-    gap: 6px;
-    flex-shrink: 0;
-    align-items: center;
-  }
-  .me-badge {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 10px;
-    background: var(--panel-2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    font-size: 12px;
-    color: var(--text-dim);
-  }
-  .me-badge .dot-my {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--green);
-  }
+
   .icon-btn {
-    width: 36px; height: 36px;
-    border-radius: 9px;
+    width: 38px; height: 38px;
+    border-radius: 10px;
     border: 1px solid var(--border);
     background: var(--panel-2);
     color: var(--text-dim);
@@ -192,16 +123,51 @@
     align-items: center;
     justify-content: center;
     transition: all 0.15s;
+    position: relative;
   }
   .icon-btn:hover { background: #232834; color: var(--text); }
   .icon-btn.plus {
     background: var(--accent);
     border-color: var(--accent);
     color: #fff;
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 300;
+    line-height: 1;
   }
   .icon-btn.plus:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .icon-btn.profile {
+    padding: 0;
+    overflow: hidden;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    border: 2px solid var(--border);
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .icon-btn.profile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .icon-btn.profile:hover { border-color: var(--accent); }
+
+  /* Online indicator on peer avatar */
+  .avatar-wrap { position: relative; }
+  .online-dot {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--text-dim);
+    border: 2px solid var(--panel);
+    transition: background 0.3s;
+  }
+  .online-dot.online { background: var(--green); }
 
   .messages {
     flex: 1;
@@ -291,10 +257,7 @@
     transition: border-color 0.15s;
   }
   .composer textarea:focus { border-color: var(--accent); }
-  .composer textarea:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+  .composer textarea:disabled { opacity: 0.5; cursor: not-allowed; }
   .send-btn {
     width: 42px; height: 42px;
     border-radius: 12px;
@@ -345,10 +308,10 @@
   }
   .emoji-picker span:hover { background: var(--panel-2); }
 
-  /* ============ INVITE MODAL ============ */
+  /* ============ MODAL ============ */
   .modal-overlay {
     position: fixed; inset: 0;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.65);
     display: none;
     align-items: center;
     justify-content: center;
@@ -368,9 +331,10 @@
     border-radius: 16px;
     padding: 26px;
     width: 100%;
-    max-width: 460px;
+    max-width: 440px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.6);
     animation: modalIn 0.2s;
+    position: relative;
   }
   @keyframes modalIn {
     from { opacity: 0; transform: scale(0.95) translateY(10px); }
@@ -390,6 +354,23 @@
     margin-bottom: 20px;
     line-height: 1.7;
   }
+  .modal .close-x {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal .close-x:hover { background: var(--panel-2); color: var(--text); }
+
   .modal .link-box {
     background: var(--panel-2);
     border: 1px solid var(--border);
@@ -443,7 +424,7 @@
     background: var(--panel-2);
     border-radius: 10px;
     font-size: 13px;
-    margin-bottom: 14px;
+    margin-top: 6px;
     color: var(--text-dim);
   }
   .dot {
@@ -459,42 +440,74 @@
     0%, 100% { opacity: 1; }
     50% { opacity: 0.4; }
   }
-  .modal .close-x {
-    position: absolute;
-    top: 14px;
-    left: 14px;
-    width: 30px; height: 30px;
-    border-radius: 8px;
-    border: none;
-    background: transparent;
-    color: var(--text-dim);
-    font-size: 18px;
-    cursor: pointer;
+
+  /* ============ PROFILE EDIT MODAL ============ */
+  .profile-edit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .avatar-editor {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #10b981, #059669);
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 40px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    border: 3px solid var(--border);
+    transition: border-color 0.15s;
   }
-  .modal .close-x:hover { background: var(--panel-2); color: var(--text); }
-  .modal { position: relative; }
-
-  .image-viewer {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.92);
-    display: none;
+  .avatar-editor:hover { border-color: var(--accent); }
+  .avatar-editor img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .avatar-editor .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
-    padding: 30px;
-    cursor: zoom-out;
+    font-size: 24px;
+    opacity: 0;
+    transition: opacity 0.15s;
   }
-  .image-viewer.open { display: flex; }
-  .image-viewer img {
-    max-width: 100%;
-    max-height: 100%;
-    border-radius: 8px;
-    box-shadow: 0 20px 80px rgba(0,0,0,0.8);
+  .avatar-editor:hover .overlay { opacity: 1; }
+  .profile-field {
+    width: 100%;
   }
+  .profile-field label {
+    display: block;
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .profile-field input {
+    width: 100%;
+    padding: 11px 14px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .profile-field input:focus { border-color: var(--accent); }
 
+  /* Empty state */
   .empty-state {
     flex: 1;
     display: flex;
@@ -506,10 +519,7 @@
     padding: 40px;
     gap: 14px;
   }
-  .empty-state .icon {
-    font-size: 52px;
-    opacity: 0.6;
-  }
+  .empty-state .icon { font-size: 52px; opacity: 0.6; }
   .empty-state .title {
     font-size: 16px;
     font-weight: 600;
@@ -534,31 +544,42 @@
   }
   .empty-state .cta:hover { background: var(--accent-hover); }
 
+  .image-viewer {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.92);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 30px;
+    cursor: zoom-out;
+  }
+  .image-viewer.open { display: flex; }
+  .image-viewer img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 8px;
+    box-shadow: 0 20px 80px rgba(0,0,0,0.8);
+  }
+
   @media (max-width: 600px) {
     .msg { max-width: 82%; }
     .chat-header, .messages, .composer { padding-left: 14px; padding-right: 14px; }
-    .me-badge { display: none; }
     .modal { padding: 20px; }
+    .peer-info .name { max-width: 120px; }
   }
 </style>
 </head>
 <body>
 
-<!-- ============ NAME PROMPT (فقط برای بار اول) ============ -->
-<div id="namePrompt">
-  <div class="box">
-    <h2>👋 خوش اومدی!</h2>
-    <p>یه اسم برای خودت انتخاب کن.<br>این اسم برای دوستت نمایش داده می‌شه.</p>
-    <input type="text" id="nameInput" placeholder="اسمت..." maxlength="20" />
-    <button id="btnNameConfirm" disabled>ادامه</button>
-  </div>
-</div>
-
-<!-- ============ CHAT SCREEN ============ -->
+<!-- ============ CHAT SCREEN (تنها صفحه‌ی برنامه) ============ -->
 <div id="chat">
   <div class="chat-header">
     <div class="left">
-      <div class="avatar" id="peerAvatar">؟</div>
+      <div class="avatar-wrap">
+        <div class="avatar" id="peerAvatar">؟</div>
+        <div class="online-dot" id="peerOnlineDot"></div>
+      </div>
       <div class="peer-info">
         <div class="name" id="peerName">در انتظار اتصال...</div>
         <div class="status-text" id="peerStatus">
@@ -568,11 +589,8 @@
       </div>
     </div>
     <div class="right">
-      <div class="me-badge" id="meBadge">
-        <span class="dot-my"></span>
-        <span id="meName">من</span>
-      </div>
-      <button class="icon-btn plus" id="btnInvite" title="دعوت دوست جدید">＋</button>
+      <button class="icon-btn profile" id="btnProfile" title="پروفایل من">👤</button>
+      <button class="icon-btn plus" id="btnInvite" title="دعوت دوست">＋</button>
     </div>
   </div>
 
@@ -600,7 +618,7 @@
   <div class="modal">
     <button class="close-x" id="btnCloseInvite">✕</button>
     <h2>🔗 دعوت دوست</h2>
-    <p class="sub">این لینک رو برای دوستت بفرست. به محض کلیک، خودکار وارد گفتگو می‌شه.</p>
+    <p class="sub">این لینک رو برای دوستت بفرست. به محض کلیک، خودکار وارد این گفتگو می‌شه.</p>
     <div class="link-box" id="inviteLink"></div>
     <button class="btn primary" id="btnCopyLink" disabled>📋 کپی لینک</button>
     <div class="status-row" id="inviteStatus">
@@ -610,11 +628,35 @@
   </div>
 </div>
 
+<!-- ============ PROFILE EDIT MODAL ============ -->
+<div class="modal-overlay" id="profileModal">
+  <div class="modal">
+    <button class="close-x" id="btnCloseProfile">✕</button>
+    <h2>👤 پروفایل من</h2>
+    <p class="sub">اسم و تصویر پروفایلت رو تنظیم کن. تغییرات برای دوستت هم نمایش داده می‌شه.</p>
+
+    <div class="profile-edit">
+      <div class="avatar-editor" id="avatarEditor">
+        <span id="avatarPreviewText">👤</span>
+        <div class="overlay">📷</div>
+      </div>
+      <div class="profile-field">
+        <label>نام نمایشی</label>
+        <input type="text" id="profileNameInput" placeholder="اسمت..." maxlength="20" />
+      </div>
+    </div>
+
+    <button class="btn primary" id="btnSaveProfile">💾 ذخیره</button>
+    <button class="btn" id="btnRemoveAvatar">🗑️ حذف تصویر</button>
+  </div>
+</div>
+
 <div class="image-viewer" id="imageViewer">
   <img id="viewerImg" src="" alt="" />
 </div>
 
 <input type="file" id="fileInput" accept="image/*" style="display:none;" />
+<input type="file" id="avatarFileInput" accept="image/*" style="display:none;" />
 
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
@@ -627,11 +669,14 @@ const APP = {
   myId: null,
   isHost: false,
   connected: false,
-  myName: localStorage.getItem('chat_name') || '',
+  // پروفایل من
+  myName: localStorage.getItem('chat_name') || 'کاربر',
+  myAvatar: localStorage.getItem('chat_avatar') || null,
+  // پروفایل طرف مقابل
   peerName: 'دوست',
+  peerAvatar: null,
   connectAttempted: false,
-  pendingJoinId: null,
-  nameConfirmed: false
+  pendingJoinId: null
 };
 
 // ================================================================
@@ -641,8 +686,8 @@ const $ = id => document.getElementById(id);
 const chatEl = $('chat');
 const messagesEl = $('messages');
 const msgInput = $('msgInput');
-const namePrompt = $('namePrompt');
 const inviteModal = $('inviteModal');
+const profileModal = $('profileModal');
 
 // ================================================================
 // STATUS UI
@@ -667,12 +712,29 @@ function setInviteStatus(dotClass, text) {
 
 function updatePeerInfo() {
   $('peerName').textContent = APP.peerName;
-  $('peerAvatar').textContent = APP.peerName.charAt(0).toUpperCase() || '؟';
-  setPeerStatus('connected', 'آنلاین');
+  const avatarEl = $('peerAvatar');
+  if (APP.peerAvatar) {
+    avatarEl.innerHTML = `<img src="${APP.peerAvatar}" alt="" />`;
+  } else {
+    avatarEl.textContent = APP.peerName.charAt(0).toUpperCase() || '؟';
+  }
 }
 
 function updateMeInfo() {
-  $('meName').textContent = APP.myName || 'من';
+  const btn = $('btnProfile');
+  if (APP.myAvatar) {
+    btn.innerHTML = `<img src="${APP.myAvatar}" alt="" />`;
+  } else {
+    const initial = (APP.myName || 'م').charAt(0).toUpperCase();
+    btn.innerHTML = `<span>${initial}</span>`;
+  }
+}
+
+function setOnlineIndicator(online) {
+  const dot = $('peerOnlineDot');
+  if (!dot) return;
+  if (online) dot.classList.add('online');
+  else dot.classList.remove('online');
 }
 
 // ================================================================
@@ -687,12 +749,10 @@ function initPeer() {
     console.log('Peer ready:', id);
 
     if (APP.isHost) {
-      // میزبان: لینک رو در modal آماده کن
       const link = buildLink(id);
       $('inviteLink').textContent = link;
       $('btnCopyLink').disabled = false;
     } else if (APP.pendingJoinId) {
-      // مهمان: مستقیم وصل شو
       connectToFriend(APP.pendingJoinId);
     }
   });
@@ -754,22 +814,22 @@ function setupConnection() {
     opened = true;
     APP.connected = true;
 
-    // ارسال نام
-    send({ type: 'hello', name: APP.myName });
+    // ارسال پروفایل اولیه
+    send({
+      type: 'profile',
+      name: APP.myName,
+      avatar: APP.myAvatar
+    });
 
-    // فعال‌سازی composer
     enableComposer();
-
-    // مخفی کردن empty state
     const es = $('emptyState');
     if (es) es.style.display = 'none';
 
-    // اگه میزبان بود، بستن modal دعوت
+    setOnlineIndicator(true);
+
     if (APP.isHost) {
       setInviteStatus('connected', '✅ دوستت وصل شد!');
-      setTimeout(() => {
-        inviteModal.classList.remove('open');
-      }, 1000);
+      setTimeout(() => inviteModal.classList.remove('open'), 1000);
     }
   };
 
@@ -784,6 +844,7 @@ function setupConnection() {
   conn.on('close', () => {
     APP.connected = false;
     setPeerStatus('error', 'قطع شد');
+    setOnlineIndicator(false);
     addSystemMessage('اتصال قطع شد');
     disableComposer();
   });
@@ -804,10 +865,11 @@ function send(data) {
 // ================================================================
 function handleData(data) {
   switch (data.type) {
-    case 'hello':
-      APP.peerName = data.name || 'دوست';
+    case 'profile':
+      // پروفایل طرف مقابل
+      if (data.name) APP.peerName = data.name;
+      APP.peerAvatar = data.avatar || null;
       updatePeerInfo();
-      addSystemMessage(`${APP.peerName} وارد گفتگو شد`);
       break;
     case 'msg':
       addMessage(data.text, false, data.time);
@@ -841,7 +903,7 @@ function nowTime() {
 function addMessage(text, isMe, time) {
   const el = document.createElement('div');
   el.className = 'msg ' + (isMe ? 'me' : 'them');
-  const who = isMe ? (APP.myName || 'من') : APP.peerName;
+  const who = isMe ? APP.myName : APP.peerName;
   el.innerHTML = `
     <div class="who">${escapeHtml(who)}</div>
     <div class="body">${escapeHtml(text).replace(/\n/g, '<br>')}</div>
@@ -854,7 +916,7 @@ function addMessage(text, isMe, time) {
 function addImageMessage(dataUrl, isMe, time) {
   const el = document.createElement('div');
   el.className = 'msg ' + (isMe ? 'me' : 'them');
-  const who = isMe ? (APP.myName || 'من') : APP.peerName;
+  const who = isMe ? APP.myName : APP.peerName;
   el.innerHTML = `
     <div class="who">${escapeHtml(who)}</div>
     <img src="${dataUrl}" alt="عکس" />
@@ -927,40 +989,22 @@ function autoResize() {
 }
 
 // ================================================================
-// ENTER CHAT
-// ================================================================
-function enterChat() {
-  namePrompt.style.display = 'none';
-  chatEl.style.display = 'flex';
-  updateMeInfo();
-  updatePeerInfo();
-
-  // اگه مهمان بود و هنوز وصل نشده، وضعیت رو نشون بده
-  if (!APP.connected && !APP.isHost) {
-    setPeerStatus('connecting', 'در حال اتصال...');
-  }
-}
-
-// ================================================================
 // INVITE MODAL
 // ================================================================
 function openInviteModal() {
   inviteModal.classList.add('open');
 
   if (!APP.peer) {
-    // اولین بار: Peer رو راه‌اندازی کن
     APP.isHost = true;
     initPeer();
   }
 
-  // اگه لینک آماده است
   if (APP.myId) {
     const link = buildLink(APP.myId);
     $('inviteLink').textContent = link;
     $('btnCopyLink').disabled = false;
   }
 
-  // وضعیت
   if (APP.connected) {
     setInviteStatus('connected', '✅ دوستت وصل شده');
   } else {
@@ -969,32 +1013,87 @@ function openInviteModal() {
 }
 
 // ================================================================
-// EVENT LISTENERS
+// PROFILE MODAL
 // ================================================================
-// Name prompt
-$('nameInput').addEventListener('input', e => {
-  $('btnNameConfirm').disabled = e.target.value.trim().length === 0;
-});
+let pendingAvatar = null; // برای ذخیره‌ی موقت تصویر انتخاب‌شده
 
-$('btnNameConfirm').onclick = () => {
-  const name = $('nameInput').value.trim();
-  if (!name) return;
-  APP.myName = name.substring(0, 20);
-  localStorage.setItem('chat_name', APP.myName);
-  APP.nameConfirmed = true;
-  namePrompt.style.display = 'none';
+function openProfileModal() {
+  profileModal.classList.add('open');
+  $('profileNameInput').value = APP.myName;
+  pendingAvatar = APP.myAvatar;
+  renderAvatarEditor();
+  setTimeout(() => $('profileNameInput').focus(), 100);
+}
 
-  // ادامه‌ی راه‌اندازی
-  bootApp();
+function renderAvatarEditor() {
+  const editor = $('avatarEditor');
+  if (pendingAvatar) {
+    editor.innerHTML = `<img src="${pendingAvatar}" alt="" /><div class="overlay">📷</div>`;
+  } else {
+    const initial = (APP.myName || 'م').charAt(0).toUpperCase();
+    editor.innerHTML = `<span>${initial}</span><div class="overlay">📷</div>`;
+  }
+}
+
+$('avatarEditor').onclick = () => $('avatarFileInput').click();
+
+$('avatarFileInput').onchange = e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) {
+    alert('حجم تصویر نباید بیشتر از ۲ مگابایت باشه');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    pendingAvatar = ev.target.result;
+    renderAvatarEditor();
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
 };
 
-// Invite modal
+$('btnSaveProfile').onclick = () => {
+  const newName = $('profileNameInput').value.trim() || 'کاربر';
+  APP.myName = newName.substring(0, 20);
+  APP.myAvatar = pendingAvatar;
+
+  localStorage.setItem('chat_name', APP.myName);
+  if (APP.myAvatar) localStorage.setItem('chat_avatar', APP.myAvatar);
+  else localStorage.removeItem('chat_avatar');
+
+  updateMeInfo();
+
+  // ارسال به طرف مقابل
+  send({
+    type: 'profile',
+    name: APP.myName,
+    avatar: APP.myAvatar
+  });
+
+  profileModal.classList.remove('open');
+};
+
+$('btnRemoveAvatar').onclick = () => {
+  pendingAvatar = null;
+  renderAvatarEditor();
+};
+
+$('btnCloseProfile').onclick = () => profileModal.classList.remove('open');
+profileModal.addEventListener('click', e => {
+  if (e.target === profileModal) profileModal.classList.remove('open');
+});
+
+// ================================================================
+// EVENT LISTENERS
+// ================================================================
 $('btnInvite').onclick = openInviteModal;
 $('btnInviteEmpty').onclick = openInviteModal;
 $('btnCloseInvite').onclick = () => inviteModal.classList.remove('open');
 inviteModal.addEventListener('click', e => {
   if (e.target === inviteModal) inviteModal.classList.remove('open');
 });
+$('btnProfile').onclick = openProfileModal;
 
 $('btnCopyLink').onclick = () => {
   const link = $('inviteLink').textContent;
@@ -1003,7 +1102,6 @@ $('btnCopyLink').onclick = () => {
     $('btnCopyLink').textContent = '✅ کپی شد!';
     setTimeout(() => $('btnCopyLink').textContent = '📋 کپی لینک', 1500);
   }).catch(() => {
-    // fallback
     const ta = document.createElement('textarea');
     ta.value = link;
     document.body.appendChild(ta);
@@ -1014,7 +1112,6 @@ $('btnCopyLink').onclick = () => {
   });
 };
 
-// Send
 $('btnSend').onclick = sendMessage;
 
 msgInput.addEventListener('keydown', e => {
@@ -1072,52 +1169,41 @@ $('imageViewer').onclick = () => {
 };
 
 // ================================================================
-// BOOT
+// BOOT (تنها نقطه‌ی ورود)
 // ================================================================
-function bootApp() {
+function boot() {
   const params = new URLSearchParams(location.search);
   const joinId = params.get('join');
+
+  // آپدیت UI من
+  updateMeInfo();
+  updatePeerInfo();
 
   if (joinId) {
     // ============ مهمان ============
     APP.isHost = false;
     APP.pendingJoinId = joinId;
 
-    // مستقیم برو تو چت
-    enterChat();
+    // صفحه‌ی چت رو نشون بده (تنها صفحه)
+    chatEl.style.display = 'flex';
     setPeerStatus('connecting', 'در حال اتصال...');
 
-    // راه‌اندازی Peer
+    // اگه اسم پیش‌فرض داره، همون رو نشون بده
+    // (کاربر می‌تونه بعداً از پروفایل تغییرش بده)
+
+    // راه‌اندازی Peer و اتصال
     initPeer();
   } else {
     // ============ میزبان ============
     APP.isHost = true;
-
-    // مستقیم برو تو چت
-    enterChat();
+    chatEl.style.display = 'flex';
 
     // راه‌اندازی Peer (لینک در modal آماده می‌شه)
     initPeer();
   }
 }
 
-// ================================================================
-// INIT
-// ================================================================
-window.addEventListener('load', () => {
-  const savedName = localStorage.getItem('chat_name');
-
-  if (savedName && savedName.length > 0) {
-    // اسم ذخیره شده → مستقیم برو تو برنامه
-    APP.myName = savedName.substring(0, 20);
-    APP.nameConfirmed = true;
-    bootApp();
-  } else {
-    // اسم نداره → پنل اسم
-    namePrompt.style.display = 'flex';
-    $('nameInput').focus();
-  }
-});
+window.addEventListener('load', boot);
 
 window.addEventListener('beforeunload', () => {
   if (APP.conn && APP.conn.open) {
